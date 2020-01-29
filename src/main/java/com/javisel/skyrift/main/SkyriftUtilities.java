@@ -46,14 +46,11 @@ public class SkyriftUtilities {
         playerData.setLevel(playerData.getLevel()+1);
 
             double newvalue = entityData.getExperience().getValue() - SkyRift.getLevelupExp(playerData.getLevel());
-            entityData.getExperience().removeAllModifiers();
             Collection c = entityData.getExperience().getModifiers();
 
-            Iterator i = c.iterator();
+            for (Object o : c) {
 
-            while (i.hasNext()) {
-
-                AttributeModifier at = (AttributeModifier) i.next();
+                AttributeModifier at = (AttributeModifier) o;
                 System.out.println(at.toString());
                 UUID id = at.getID();
                 entityData.getExperience().removeModifier(id);
