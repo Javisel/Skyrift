@@ -1,4 +1,6 @@
 {
-  "item.skyrift.magic_wand": "Magic Wand"
+  "item.skyrift.magic_wand": "Magic Wand",
+  "item.skyrift.pyro_soul_stone": "Pyro Soul Stone",
+  "itemGroup.skyrift_itemgroup": "Skyrift"
 
 }

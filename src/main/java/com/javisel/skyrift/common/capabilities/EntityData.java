@@ -1,18 +1,22 @@
 package com.javisel.skyrift.common.capabilities;
 
 import com.javisel.skyrift.common.champion.attribute.SkyriftAttributeMap;
+import com.javisel.skyrift.main.SkyriftAttributes;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+
+import java.util.ArrayList;
 
 import static com.javisel.skyrift.main.SkyriftAttributes.*;
 
 public class EntityData implements IEntityData{
 
     AttributeMap skyriftAttributes = new SkyriftAttributeMap();
-    float RESOURCE_AMOUNT;
-
+    float RESOURCE_AMOUNT=0;
+    boolean isRanged = false;
+    float health=0;
 
 
 
@@ -21,12 +25,18 @@ public class EntityData implements IEntityData{
 
     public void loadNBT(CompoundNBT nbt) {
 
+        skyriftAttributes = new SkyriftAttributeMap();
         SharedMonsterAttributes.readAttributes(skyriftAttributes,  nbt.getList("attributemap",10));
 
+        isRanged=nbt.getBoolean("isranged");
+        health=nbt.getFloat("health");
 
 
+    }
 
-
+    @Override
+    public IAttributeInstance getAttackDamage() {
+        return skyriftAttributes.getAttributeInstance(ATTACK_DAMAGE);
     }
 
     @Override
@@ -40,8 +50,8 @@ public class EntityData implements IEntityData{
         CompoundNBT nbt = new CompoundNBT();
         nbt.putFloat("resourceamount",getResourceAmount());
         nbt.put("attributemap",SharedMonsterAttributes.writeAttributes(skyriftAttributes));
-
-
+        nbt.putBoolean("isranged",isRanged);
+        nbt.putFloat("health",health);
         return  nbt;
     }
 
@@ -50,77 +60,102 @@ public class EntityData implements IEntityData{
 
     @Override
     public IAttributeInstance getPhysicalPower() {
-                 return (IAttributeInstance) skyriftAttributes.getAttributeInstance(PHYSICAL_POWER);
+                 return skyriftAttributes.getAttributeInstance(PHYSICAL_POWER);
 
     }
 
     @Override
     public IAttributeInstance getMagicalPower() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(MAGICAL_POWER);
+        return skyriftAttributes.getAttributeInstance(MAGICAL_POWER);
 
     }
 
 
     @Override
     public IAttributeInstance getCritChance() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(CRITCHANCE);
+        return skyriftAttributes.getAttributeInstance(CRITCHANCE);
     }
 
     @Override
     public IAttributeInstance getCritDamage() {
-                 return (IAttributeInstance) skyriftAttributes.getAttributeInstance(CRITDAMAGE);
+                 return skyriftAttributes.getAttributeInstance(CRITDAMAGE);
 
+    }
+
+    @Override
+    public void setIsRanged(Boolean isRanged) {
+        this.isRanged=isRanged;
     }
 
     @Override
     public IAttributeInstance getLifesteal() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(LIFESTEAL);
+        return skyriftAttributes.getAttributeInstance(LIFESTEAL);
     }
 
     @Override
     public IAttributeInstance getFlatArmorPenetration() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(FLATARMORPEN);
+        return skyriftAttributes.getAttributeInstance(FLATARMORPEN);
     }
 
     @Override
     public IAttributeInstance getFlatMagicPenetration() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(FLATMAGICPEN);
+        return skyriftAttributes.getAttributeInstance(FLATMAGICPEN);
     }
 
     @Override
     public IAttributeInstance getPercentArmorPenetration() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(PERCENTARMORPEN);
+        return skyriftAttributes.getAttributeInstance(PERCENTARMORPEN);
     }
 
     @Override
     public IAttributeInstance getPercentMagicPenetration() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(PERCENTMAGICPEN);
+        return skyriftAttributes.getAttributeInstance(PERCENTMAGICPEN);
     }
 
     @Override
     public IAttributeInstance getSpellVamp() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(SPELLVAMP);
+        return skyriftAttributes.getAttributeInstance(SPELLVAMP);
 
+    }
+
+    @Override
+    public float getHealth() {
+        return health;
+    }
+
+    @Override
+    public void setHealth(float amount){
+
+        this.health=amount;
+        if (health>this.getMaxHealth().getValue()) {
+            health= (float) this.getMaxHealth().getValue();
+        }
+    }
+
+
+    @Override
+    public IAttributeInstance getMaxHealth() {
+        return skyriftAttributes.getAttributeInstance(MAX_HEALTH);
     }
 
     @Override
     public IAttributeInstance getHealthRegen() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(HEALTH_REGEN);
+        return skyriftAttributes.getAttributeInstance(HEALTH_REGEN);
     }
 
     @Override
     public IAttributeInstance getResourceRegen() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(RESOURCE_REGEN);
+        return skyriftAttributes.getAttributeInstance(RESOURCE_REGEN);
     }
 
     @Override
     public IAttributeInstance getArmor() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(ARMOR);
+        return skyriftAttributes.getAttributeInstance(ARMOR);
     }
 
     @Override
     public IAttributeInstance getMagicResist() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(MAGIC_RESIST);
+        return skyriftAttributes.getAttributeInstance(MAGIC_RESIST);
     }
 
     @Override
@@ -135,34 +170,72 @@ public class EntityData implements IEntityData{
 
     @Override
     public IAttributeInstance getMaxResourceAmount() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(MAX_RESOURCE_AMOUNT);
+        return skyriftAttributes.getAttributeInstance(MAX_RESOURCE_AMOUNT);
     }
 
     @Override
     public IAttributeInstance getCooldownReduction() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(COOLDOWN_REDUCTION);
+        return skyriftAttributes.getAttributeInstance(COOLDOWN_REDUCTION);
     }
 
     @Override
     public IAttributeInstance getExperience() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(EXPERIENCE);
 
+
+        if (skyriftAttributes.getAttributeInstance(EXPERIENCE)==null) {
+            System.err.println("There is no attribute with said instance");
+            skyriftAttributes.registerAttribute(EXPERIENCE);
+            return null;
+        } else {
+
+            return skyriftAttributes.getAttributeInstance(EXPERIENCE);
+
+        }
     }
 
     @Override
     public IAttributeInstance getGoldGeneration() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(GOLD_GENERATION);
+        return skyriftAttributes.getAttributeInstance(GOLD_GENERATION);
     }
 
     @Override
     public IAttributeInstance getRange() {
-        return (IAttributeInstance) skyriftAttributes.getAttributeInstance(RANGE);
+        return skyriftAttributes.getAttributeInstance(RANGE);
     }
+
+
+    @Override
+    public ArrayList<IAttributeInstance> corestats() {
+
+        ArrayList<IAttributeInstance> corestats =new ArrayList<>();
+
+        corestats.add(skyriftAttributes.getAttributeInstance(PHYSICAL_POWER));
+        corestats.add(skyriftAttributes.getAttributeInstance(MAGICAL_POWER));
+        corestats.add(skyriftAttributes.getAttributeInstance(ARMOR));
+        corestats.add(skyriftAttributes.getAttributeInstance(MAGIC_RESIST));
+
+        return  corestats;
+
+
+
+    }
+
+
 
     @Override
     public boolean isRanged() {
-        return false;
+        return isRanged;
     }
 
+    public void resetData() {
+        skyriftAttributes = new SkyriftAttributeMap();
+        RESOURCE_AMOUNT=0;
+        isRanged=false;
 
+    }
+
+    @Override
+    public void setResourceAmount(double amount) {
+        RESOURCE_AMOUNT= (float) amount;
+    }
 }

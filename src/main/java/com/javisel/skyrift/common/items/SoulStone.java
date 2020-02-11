@@ -5,6 +5,8 @@ import com.javisel.skyrift.common.capabilities.IEntityData;
 import com.javisel.skyrift.common.capabilities.IPlayerData;
 import com.javisel.skyrift.common.capabilities.PlayerDataProvider;
 import com.javisel.skyrift.common.champion.Champion;
+import com.javisel.skyrift.main.SkyRift;
+import com.javisel.skyrift.main.SkyriftUtilities;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -22,7 +24,7 @@ public abstract class SoulStone extends Item {
    private   Champion champion;
 
     public SoulStone(Champion champion) {
-        super(new Properties().maxStackSize(1));
+        super(new Properties().maxStackSize(1).group(SkyRift.skyriftgroup));
             this.champion=champion;
         setRegistryName(champion.getName()+"_soul_stone");
 
@@ -38,17 +40,13 @@ public abstract class SoulStone extends Item {
         if (!p_77659_1_.isRemote) {
 
 
-            IPlayerData playerData = playerEntity.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
-             if (playerData.isChampion()) {
-                 playerEntity.sendMessage(new StringTextComponent(TextFormatting.RED + "Error: " + TextFormatting.WHITE + " You are already a Champion! You are using " + TextFormatting.BOLD + playerData.getChampion().getName() +"'s powers!"  ));
-             } else {
-                 playerData.setisChampion();
-                    playerData.setChampion(champion);
-                    initateChampion(playerEntity);
+
+
+                    SkyriftUtilities.InitializeChampion(playerEntity,champion);
                  playerEntity.sendMessage(new StringTextComponent( " Acquired " + TextFormatting.BOLD + champion.getName() +"'s powers!"  ));
 
 
-             }
+
 
 
 
@@ -59,9 +57,7 @@ public abstract class SoulStone extends Item {
     }
 
 
-    public void initateChampion(PlayerEntity playerEntity) {
 
-    }
 
 
 

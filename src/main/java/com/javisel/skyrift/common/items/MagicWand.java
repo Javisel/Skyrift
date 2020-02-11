@@ -32,8 +32,9 @@ public class MagicWand extends Item {
 
 
     public MagicWand() {
-        super(new Properties());
+        super(new Properties().group(SkyRift.skyriftgroup));
         setRegistryName(SkyRift.MODID, "magic_wand");
+
     }
 
     /**
@@ -69,11 +70,9 @@ public class MagicWand extends Item {
                 playerData.setLevel(1);
                 Collection c = entityData.getExperience().getModifiers();
 
-                Iterator i = c.iterator();
+                for (Object o : c) {
 
-                while (i.hasNext()) {
-
-                    AttributeModifier at = (AttributeModifier) i.next();
+                    AttributeModifier at = (AttributeModifier) o;
                     System.out.println(at.toString());
                     UUID id = at.getID();
                     entityData.getExperience().removeModifier(id);
@@ -90,6 +89,7 @@ public class MagicWand extends Item {
                 SkyriftUtilities.addExp(p_77659_2_, 50);
 
             }
+            System.out.println("SERVER EXP: " + entityData.getExperience().getValue());
 
         }
         return super.onItemRightClick(p_77659_1_, p_77659_2_, p_77659_3_);

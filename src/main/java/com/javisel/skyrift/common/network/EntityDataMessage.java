@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class EntityDataMessage {
 
-    public static CompoundNBT nbt;
+    public  CompoundNBT nbt;
 
 
     public EntityDataMessage(CompoundNBT nbtag) {
@@ -22,7 +22,7 @@ public class EntityDataMessage {
 
 
     public static void encode(EntityDataMessage pkt, PacketBuffer buf) {
-        buf.writeCompoundTag(nbt);
+        buf.writeCompoundTag(pkt.nbt);
     }
 
     public static EntityDataMessage decode(PacketBuffer buf) {
