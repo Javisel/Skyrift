@@ -12,8 +12,9 @@ public interface IPlayerData {
     int getLevel();
     void setLevel(int levelIn);
     CompoundNBT writeNBT();
+    CompoundNBT getChampionData();
     void loadNBT(CompoundNBT nbt);
-
+    void resetData();
 
 
 

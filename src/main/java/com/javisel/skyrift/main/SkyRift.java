@@ -4,11 +4,15 @@ import com.javisel.skyrift.client.OverlayHandler;
 import com.javisel.skyrift.common.capabilities.*;
 import com.javisel.skyrift.common.champion.ChampionDatabase;
 import com.javisel.skyrift.common.registration.CapabilityRegistration;
+import com.javisel.skyrift.common.registration.ItemRegistration;
 import com.javisel.skyrift.common.registration.PacketRegistration;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
@@ -25,6 +29,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.stream.Collectors;
 
+import static net.minecraft.entity.SharedMonsterAttributes.*;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("skyrift")
 public class SkyRift {
@@ -35,6 +41,8 @@ public class SkyRift {
     public static final String BASIC_ATTACK_SCALING = "bas";
     public static final String BASE_VALUE ="basevalue";
     public static final String MODID = "skyrift";
+    public static ItemGroup skyriftgroup  =new SkyriftItemGroup();
+    private static final IAttribute[] ATTRIBUTES = new IAttribute[] { MAX_HEALTH, FOLLOW_RANGE, KNOCKBACK_RESISTANCE, MOVEMENT_SPEED, FLYING_SPEED, ATTACK_DAMAGE, ATTACK_SPEED, ARMOR, ARMOR_TOUGHNESS, LUCK };
 
     public static ChampionDatabase championDatabase;
     public SkyRift() {

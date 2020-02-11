@@ -27,6 +27,12 @@ public class ChampionConfig {
     protected ForgeConfigSpec.ConfigValue<Double> rpsPerLevel;
     protected ForgeConfigSpec.ConfigValue<Double> baseAttackDamage;
     protected ForgeConfigSpec.ConfigValue<Double> attackDamagePerLevel;
+
+    public ForgeConfigSpec.ConfigValue<Double> getAttackScaling() {
+        return attackScaling;
+    }
+
+    protected ForgeConfigSpec.ConfigValue<Double> attackScaling;
     protected ForgeConfigSpec.ConfigValue<Double> baseAttackSpeed;
     protected ForgeConfigSpec.ConfigValue<Double> attackSpeedPerLevel;
     protected ForgeConfigSpec.ConfigValue<Double> movementSpeed;
@@ -141,23 +147,25 @@ public class ChampionConfig {
 
         ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
         BUILDER.comment(name + " base statistics");
-        baseHealth = BUILDER.comment("Base health").defineInRange("baseHealth", 1D, 1, 40000);
-        healthPerLevel = BUILDER.comment("Health per level").defineInRange("healthPerLevel", 1D, 1, 40000);
-        baseHPS = BUILDER.comment("Base Health Regen.").defineInRange("baseHPS", 1D, 1, 40000);
-        hpsPerLevel = BUILDER.comment("Health Regen per Level").defineInRange("hpsPerLevel", 1D, 1, 40000);
-        basePhysicalDefence = BUILDER.comment("Base Physical Defence").defineInRange("basePhysicalDefence", 1D, 1, 40000);
-        physicalDefencePerLevel = BUILDER.comment("Physical Defence per Level").defineInRange("physicalDefencePerLevel", 1D, 1, 40000);
-        baseMagicDefence = BUILDER.comment("Base Magic Defence").defineInRange("baseMagicDefence", 1D, 1, 40000);
-        magicalDefencePerLevel = BUILDER.comment("Magic Defence per Level").defineInRange("magicDefencePerLevel", 1D, 1, 40000);
-        baseResource = BUILDER.comment("Base Resource Amount").defineInRange("baseResource", 1D, 1, 40000);
-        resourcePerLevel = BUILDER.comment("Resource Per Level").defineInRange("resourcePerLevel", 1D, 1, 40000);
-        baseRPS = BUILDER.comment("Base Resource Regen").defineInRange("baseRPS", 1D, 1, 40000);
-        rpsPerLevel = BUILDER.comment("Resource Regen per level").defineInRange("rpsPerLevel", 1D, 1, 40000);
-        baseAttackDamage = BUILDER.comment("Base Attack Damage").defineInRange("baseAttackDamage", 1D, 1, 40000);
-        attackDamagePerLevel = BUILDER.comment("Attack Damage Per Level").defineInRange("attackDamagePerLevel", 1D, 1, 40000);
-        baseAttackSpeed = BUILDER.comment("Base Attack Speed").defineInRange("baseAttackSpeed", 1D, 1, 40000);
-        attackSpeedPerLevel = BUILDER.comment("Attack Speed Per Level").defineInRange("attackSpeedPerLevel", 1D, 1, 40000);
-        movementSpeed = BUILDER.comment("Base Movement Speed").defineInRange("baseMovementSpeed", 1D, 1, 40000);
+        baseHealth = BUILDER.comment("Base health").defineInRange("baseHealth", 0D,0, 40000);
+        healthPerLevel = BUILDER.comment("Health per level").defineInRange("healthPerLevel", 0D,0, 40000);
+        baseHPS = BUILDER.comment("Base Health Regen.").defineInRange("baseHPS", 0D,0, 40000);
+        hpsPerLevel = BUILDER.comment("Health Regen per Level").defineInRange("hpsPerLevel", 0D,0, 40000);
+        basePhysicalDefence = BUILDER.comment("Base Physical Defence").defineInRange("basePhysicalDefence", 0D,0, 40000);
+        physicalDefencePerLevel = BUILDER.comment("Physical Defence per Level").defineInRange("physicalDefencePerLevel", 0D,0, 40000);
+        baseMagicDefence = BUILDER.comment("Base Magic Defence").defineInRange("baseMagicDefence", 0D,0, 40000);
+        magicalDefencePerLevel = BUILDER.comment("Magic Defence per Level").defineInRange("magicDefencePerLevel", 0D,0, 40000);
+        baseResource = BUILDER.comment("Base Resource Amount").defineInRange("baseResource", 0D,0, 40000);
+        resourcePerLevel = BUILDER.comment("Resource Per Level").defineInRange("resourcePerLevel", 0D,0, 40000);
+        baseRPS = BUILDER.comment("Base Resource Regen").defineInRange("baseRPS", 0D,0, 40000);
+        rpsPerLevel = BUILDER.comment("Resource Regen per level").defineInRange("rpsPerLevel", 0D,0, 40000);
+        baseAttackDamage = BUILDER.comment("Base Attack Damage").defineInRange("baseAttackDamage", 0D,0, 40000);
+        attackScaling = BUILDER.comment("Basic Attack Scaling").defineInRange("basicAttackScaling", 0D,0, 40000);
+
+        attackDamagePerLevel = BUILDER.comment("Attack Damage Per Level").defineInRange("attackDamagePerLevel", 0D,0, 40000);
+        baseAttackSpeed = BUILDER.comment("Base Attack Speed").defineInRange("baseAttackSpeed", 0D,0, 40000);
+        attackSpeedPerLevel = BUILDER.comment("Attack Speed Per Level").defineInRange("attackSpeedPerLevel", 0D,0, 40000);
+        movementSpeed = BUILDER.comment("Base Movement Speed").defineInRange("baseMovementSpeed", 0D,0, 40000);
         isRanged = BUILDER.comment("Is Ranged").define("isRanged", false);
 
 

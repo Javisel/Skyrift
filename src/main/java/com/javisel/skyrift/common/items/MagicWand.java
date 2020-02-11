@@ -20,6 +20,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.UUID;
 
 import static com.javisel.skyrift.main.SkyriftAttributes.MAGICAL_POWER;
@@ -30,8 +32,9 @@ public class MagicWand extends Item {
 
 
     public MagicWand() {
-        super(new Properties());
+        super(new Properties().group(SkyRift.skyriftgroup));
         setRegistryName(SkyRift.MODID, "magic_wand");
+
     }
 
     /**
@@ -65,11 +68,28 @@ public class MagicWand extends Item {
             if (p_77659_2_.isSneaking()) {
                 entityData.getExperience().removeAllModifiers();
                 playerData.setLevel(1);
+                Collection c = entityData.getExperience().getModifiers();
+
+                for (Object o : c) {
+
+                    AttributeModifier at = (AttributeModifier) o;
+                    System.out.println(at.toString());
+                    UUID id = at.getID();
+                    entityData.getExperience().removeModifier(id);
+
+                }
+
+
+
+                PacketRegistration.HANDLER.sendTo(new PlayerDataMessage(playerData.writeNBT()), ((ServerPlayerEntity) p_77659_2_).connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+                PacketRegistration.HANDLER.sendTo(new EntityDataMessage(entityData.writeNBT()), ((ServerPlayerEntity) p_77659_2_).connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+
             }  else
             {
                 SkyriftUtilities.addExp(p_77659_2_, 50);
 
             }
+            System.out.println("SERVER EXP: " + entityData.getExperience().getValue());
 
         }
         return super.onItemRightClick(p_77659_1_, p_77659_2_, p_77659_3_);

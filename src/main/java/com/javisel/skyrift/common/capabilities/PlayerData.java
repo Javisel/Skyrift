@@ -9,6 +9,13 @@ public class PlayerData implements IPlayerData {
 
     boolean isChampion = false;
     Champion champion;
+    CompoundNBT championData = new CompoundNBT();
+
+    @Override
+    public CompoundNBT getChampionData() {
+        return championData;
+    }
+
     int level =0;
 
     @Override
@@ -65,11 +72,25 @@ public class PlayerData implements IPlayerData {
         isChampion=nbt.getBoolean("ischampion");
 
         if (nbt.hasUniqueId("championid")) {
-            System.out.println("there is an id!");
 
             champion = ChampionDatabase.championHashMap.get(nbt.getUniqueId("championid"));
         }
         level=nbt.getInt("level");
 
     }
+
+    public void resetData() {
+        isChampion=false;
+
+        champion=null;
+        championData=new CompoundNBT();
+        level=0;
+
+
+
+    }
+
+
+
+
 }
