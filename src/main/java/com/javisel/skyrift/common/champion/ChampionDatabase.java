@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public class ChampionDatabase {
 
-        public static Champion pyro = new Pyro();
+        public  static Champion pyro = new Pyro();
 
-      public static   HashMap<UUID,Champion> championHashMap = new HashMap<>();
+      public  static  HashMap<UUID,Champion> championHashMap = new HashMap<>();
 
 
 

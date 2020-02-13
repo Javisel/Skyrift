@@ -90,7 +90,6 @@ public class SkyriftUtilities {
             for (Object o : c) {
 
                 AttributeModifier at = (AttributeModifier) o;
-                System.out.println(at.toString());
                 UUID id = at.getID();
                 entityData.getExperience().removeModifier(id);
 
@@ -103,9 +102,6 @@ public class SkyriftUtilities {
 
 
 
-            System.out.println("Player Level is Now : " + playerData.getLevel());
-            System.out.println("Level-Up Threshold  is now: " + SkyRift.getLevelupExp(playerData.getLevel()+1));
-            System.out.println("New Experience: " +  entityData.getExperience().getValue());
 
         }
 
@@ -132,10 +128,9 @@ public class SkyriftUtilities {
         playerEntity.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).setBaseValue(1);
         playerEntity.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).removeAllModifiers();
         playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();;
-        playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.01);
+        playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.1);
         playerData.setChampion(champion);
         playerData.setisChampion();
-        System.out.println("Champion:" + playerData.isChampion());
         playerData.getChampionData().putInt("tickcount",0);
 
         entityData.getMaxHealth().setBaseValue(champion.getBasedata().getBaseHealth().get());
@@ -146,15 +141,20 @@ public class SkyriftUtilities {
         entityData.getArmor().setBaseValue(champion.getBasedata().getBasePhysicalDefence().get());
         entityData.getMagicResist().setBaseValue(champion.getBasedata().getBaseMagicDefence().get());
         entityData.getMaxResourceAmount().setBaseValue(champion.getBasedata().getBaseResource().get());
+        if (champion.getResource().spawnFull) {
+            entityData.setResourceAmount(entityData.getMaxResourceAmount().getValue());
+        }
         entityData.getResourceRegen().setBaseValue(champion.getBasedata().getBaseRPS().get());
         entityData.getAttackDamage().setBaseValue(champion.getBasedata().getBaseAttackDamage().get());
+
         playerEntity.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).setBaseValue(champion.getBasedata().getBaseAttackSpeed().get());
-       playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(champion.getBasedata().getMovementSpeed().get());
-       entityData.setIsRanged(champion.getBasedata().getIsRanged().get());
+       playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier("Base Speed", (playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getBaseValue()-champion.getBasedata().getMovementSpeed().get()) *-1, AttributeModifier.Operation.ADDITION));
+
+        entityData.setIsRanged(champion.getBasedata().getIsRanged().get());
         levelUp(playerEntity);
 
         sync(playerEntity);
-
+        champion.construct(playerEntity);
 
 
 
@@ -219,6 +219,28 @@ IEntityData entityData = target.getCapability(EntityDataProvider.Entity_DATA_CAP
     }
 
 
+    public static void addResource(LivingEntity target, @Nullable LivingEntity source, float amount) {
 
+        IEntityData entityData = target.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+
+        if (amount+entityData.getResourceAmount() > entityData.getMaxResourceAmount().getValue()) {
+            amount= (float) (entityData.getMaxResourceAmount().getValue()-entityData.getResourceAmount());
+        }
+
+        entityData.setResourceAmount(entityData.getResourceAmount()+amount);
+
+        if (target instanceof PlayerEntity) {
+
+            sync((PlayerEntity) target);
+        }
+
+
+
+
+
+
+
+
+    }
 
 }

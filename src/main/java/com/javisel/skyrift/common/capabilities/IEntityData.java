@@ -13,6 +13,10 @@ public interface IEntityData {
 
     //Offensive
 
+    void setGold(int amount);
+
+    float getGold();
+
     IAttributeInstance getAttackDamage();
     IAttributeInstance getPhysicalPower();
     IAttributeInstance getMagicalPower();
@@ -48,6 +52,7 @@ public interface IEntityData {
     IAttributeInstance getGoldGeneration();
     IAttributeInstance getRange();
 
+    void addHealth(float amount);
     ArrayList<IAttributeInstance> corestats();
 
     boolean isRanged();

@@ -1,5 +1,6 @@
 package com.javisel.skyrift.main;
 
+import com.javisel.skyrift.client.KeyBindings;
 import com.javisel.skyrift.client.OverlayHandler;
 import com.javisel.skyrift.common.capabilities.*;
 import com.javisel.skyrift.common.champion.ChampionDatabase;
@@ -37,16 +38,19 @@ public class SkyRift {
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String RANK = "rank";
+    public static final String MODE = "mode";
+
+    //MODES: 0 - default, 1-Targeting, 2-Active
     public static final String SWINGAMOUNT = "swingamount";
     public static final String BASIC_ATTACK_SCALING = "bas";
     public static final String BASE_VALUE ="basevalue";
+    public static final String DISPLAYDATA ="displaydata";
+
     public static final String MODID = "skyrift";
     public static ItemGroup skyriftgroup  =new SkyriftItemGroup();
     private static final IAttribute[] ATTRIBUTES = new IAttribute[] { MAX_HEALTH, FOLLOW_RANGE, KNOCKBACK_RESISTANCE, MOVEMENT_SPEED, FLYING_SPEED, ATTACK_DAMAGE, ATTACK_SPEED, ARMOR, ARMOR_TOUGHNESS, LUCK };
 
-    public static ChampionDatabase championDatabase;
     public SkyRift() {
-        championDatabase = new ChampionDatabase();
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading
@@ -81,6 +85,7 @@ public class SkyRift {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new OverlayHandler());
+        KeyBindings.registerKeys();
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {

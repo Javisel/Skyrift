@@ -17,7 +17,7 @@ public class EntityData implements IEntityData{
     float RESOURCE_AMOUNT=0;
     boolean isRanged = false;
     float health=0;
-
+    float gold = 0;
 
 
 
@@ -32,6 +32,34 @@ public class EntityData implements IEntityData{
         health=nbt.getFloat("health");
 
 
+    }
+
+    @Override
+    public void addHealth(float amount) {
+
+        if (health+amount>getMaxHealth().getValue()) {
+            amount= (float) (getMaxHealth().getValue()-health);
+
+
+        }
+
+        health+=amount;
+        if (health<0) {
+            health=0;
+        }
+
+
+    }
+
+    @Override
+    public void setGold(int amount) {
+
+        gold=amount;
+    }
+
+    @Override
+    public float getGold() {
+        return gold;
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.javisel.skyrift.common.network.PlayerDataMessage;
 import com.javisel.skyrift.common.registration.PacketRegistration;
 import com.javisel.skyrift.main.SkyRift;
 import com.javisel.skyrift.main.SkyriftUtilities;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -86,10 +87,15 @@ public class MagicWand extends Item {
 
             }  else
             {
+                entityData.getPhysicalPower().applyModifier(new AttributeModifier(UUID.randomUUID(),"bonus physical power",20, AttributeModifier.Operation.ADDITION));
+                entityData.getMagicalPower().applyModifier(new AttributeModifier(UUID.randomUUID(),"bonus magic power",20, AttributeModifier.Operation.ADDITION));
+                entityData.getArmor().applyModifier(new AttributeModifier(UUID.randomUUID(),"bonus physical power",20, AttributeModifier.Operation.ADDITION));
+                entityData.getMagicResist().applyModifier(new AttributeModifier(UUID.randomUUID(),"bonus magic power",20, AttributeModifier.Operation.ADDITION));
+
+
                 SkyriftUtilities.addExp(p_77659_2_, 50);
 
             }
-            System.out.println("SERVER EXP: " + entityData.getExperience().getValue());
 
         }
         return super.onItemRightClick(p_77659_1_, p_77659_2_, p_77659_3_);

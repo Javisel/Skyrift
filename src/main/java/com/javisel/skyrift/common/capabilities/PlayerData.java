@@ -2,15 +2,23 @@ package com.javisel.skyrift.common.capabilities;
 
 import com.javisel.skyrift.common.champion.Champion;
 import com.javisel.skyrift.common.champion.ChampionDatabase;
+import com.javisel.skyrift.common.champion.ability.AbstractAbility;
+import com.javisel.skyrift.common.items.SkyRiftItem;
+import com.javisel.skyrift.main.SkyRift;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.IParticleData;
+
+import java.util.ArrayList;
 
 public class PlayerData implements IPlayerData {
 
     boolean isChampion = false;
     Champion champion;
     CompoundNBT championData = new CompoundNBT();
-
+    ArrayList<ItemStack> abilities = new ArrayList<>();
+    ArrayList<ItemStack> items = new ArrayList<>();
     @Override
     public CompoundNBT getChampionData() {
         return championData;
@@ -90,7 +98,21 @@ public class PlayerData implements IPlayerData {
 
     }
 
+    @Override
+    public void tick(PlayerEntity playerEntity) {
+        champion.tick(playerEntity);
 
+    }
+
+    @Override
+    public ArrayList<ItemStack> getAbilities() {
+        return abilities;
+    }
+
+    @Override
+    public ArrayList<ItemStack> getItems() {
+        return items;
+    }
 
 
 }

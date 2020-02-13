@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-import static com.javisel.skyrift.main.SkyRift.RANK;
+import static com.javisel.skyrift.main.SkyRift.*;
 
 public abstract class AbstractAbility extends Item {
 
@@ -42,7 +42,8 @@ public abstract class AbstractAbility extends Item {
 
 
         nbt.putInt(RANK,0);
-
+        nbt.putInt(MODE,0);
+        nbt.put(DISPLAYDATA,new CompoundNBT() );
         stack.setTag(nbt);
 
 
@@ -53,7 +54,14 @@ public abstract class AbstractAbility extends Item {
 
     public boolean isCastable(LivingEntity caster, ItemStack castitem){
 
-        return  false;
+
+
+
+
+
+
+
+        return  true;
 
     }
 
@@ -103,7 +111,10 @@ public abstract class AbstractAbility extends Item {
     public void forceActivate(LivingEntity caster , ItemStack castitem) {}
 
 
-    public void startAbility(LivingEntity caster, ItemStack castitem){}
+    public void startAbility(LivingEntity caster, ItemStack castitem){
+
+
+    }
 
     public boolean attemptCast(LivingEntity caster, ItemStack castitem) {
 

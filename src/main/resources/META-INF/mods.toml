@@ -14,7 +14,7 @@ issueTrackerURL="http://my.issue.tracker/" #optional
 # The modid of the mod
 modId="skyrift" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="${file.jarVersion}" #mandatory
+version="0.1" #mandatory
  # A display name for the mod
 displayName="Skyrift" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
@@ -24,9 +24,9 @@ displayURL="http://example.com/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="skyriftlogo.png" #optional
 # A text field displayed in the mod UI
-credits="Thanks for this example mod goes to Java" #optional
+credits="Thank you to everyone who supported me" #optional
 # A text field displayed in the mod UI
-authors="Love, Cheese and small house plants" #optional
+authors="Javisel" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 Bringing a MOBA to minecraft

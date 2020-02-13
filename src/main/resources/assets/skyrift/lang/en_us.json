@@ -1,6 +1,22 @@
 {
+  "skyrift.key.ability1" : "Ability 1",
+  "skyrift.key.ability2" : "Ability 2",
+  "skyrift.key.ability3" : "Ability 3",
+  "skyrift.key.ability4" : "Ability 4",
+  "skyrift.key.item1" : "Item 1",
+  "skyrift.key.item2" : "Item 2",
+  "skyrift.key.item3" : "Item 3",
+  "skyrift.key.item4" : "Item 4",
+  "skyrift.key.item5" : "Item 5",
+  "skyrift.key.item6" : "Item 6",
+
   "item.skyrift.magic_wand": "Magic Wand",
   "item.skyrift.pyro_soul_stone": "Pyro Soul Stone",
-  "itemGroup.skyrift_itemgroup": "Skyrift"
-
+  "itemGroup.skyrift_itemgroup": "Skyrift",
+  "item.skyrift.pyro_passive": "Burning Soul",
+  "item.skyrift.pyro_basic_attack": "Pyro's Basic Attack",
+  "item.skyrift.pyro_ability_1": "Searing Greatsword",
+  "item.skyrift.pyro_ability_2": "Flame Speed",
+  "item.skyrift.pyro_ability_3": "Cauterize Wounds",
+  "item.skyrift.pyro_ability_4": "Breath of the Fire Dragon-God"
 }

@@ -4,21 +4,31 @@ import com.javisel.skyrift.common.capabilities.*;
 import com.javisel.skyrift.main.SkyRift;
 import com.javisel.skyrift.main.SkyriftUtilities;
 import com.mojang.blaze3d.platform.GlStateManager;
+import cpw.mods.modlauncher.api.IEnvironment;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IngameGui;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.opengl.GL;
 
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import static com.javisel.skyrift.common.champion.resource.Resource.Resources.NONE;
 
@@ -32,7 +42,7 @@ public class OverlayHandler extends GuiUtils {
 
 
     @SubscribeEvent
-    public void healthbarOverride(RenderGameOverlayEvent event) {
+    public void overlayOverride(RenderGameOverlayEvent event) {
 
             if (instance.player.isCreative() || !SkyriftUtilities.isChampion(instance.player) || !instance.player.isAlive()) {
             } else {
@@ -96,6 +106,9 @@ public class OverlayHandler extends GuiUtils {
             }
 
         }
+
+            String gold = Float.toString(entityData.getGold());
+
         drawTexturedModalRect(width, height, 45, 162, 62, 7, -2);
 
     }
@@ -108,50 +121,63 @@ public class OverlayHandler extends GuiUtils {
         IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
 
         int width = 0;
-        int height = scaledresolution.getScaledHeight()-80;
+        int height = scaledresolution.getScaledHeight()-78;
 
         instance.textureManager.bindTexture(mobahud);
-        drawTexturedModalRect(width,height,1,89,40,80,-2);
+        drawTexturedModalRect(width,height,1,91,40,78,-2);
 
-        GlStateManager.pushMatrix();
-        int deductheight = (int) (height)+120;
+        int  stringx = width+26;
+        int stringy = height+2;
 
-        GlStateManager.scalef(.8f,.8f,.8f);
-        int stringwidth = 16;
-        deductheight*=.8;
-        instance.fontRenderer.drawString(getroundedDecimal(playerData.getChampion().getBasicAttackDamage(instance.player)), stringwidth, deductheight, Color.WHITE.getRGB());
-        deductheight+=16*.8;
 
-        instance.fontRenderer.drawString( getroundedDecimal(instance.player.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).getValue()), stringwidth, deductheight, Color.WHITE.getRGB());
+        ArrayList<String> displaystat = new ArrayList<>();
+
+        displaystat.add( Integer.toString((int)playerData.getChampion().getBasicAttackDamage(instance.player)));
+        displaystat.add( getroundedDecimal(instance.player.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).getValue()));
+
+
 
         for (IAttributeInstance attributeInstance : entityData.corestats()) {
-            deductheight+=16*.8;
 
-            instance.fontRenderer.drawString( getroundedDecimal(attributeInstance.getValue()), stringwidth, deductheight, Color.WHITE.getRGB());
+            displaystat.add( Integer.toString((int)attributeInstance.getValue()));
+
+
+
+        }
+        displaystat.add( getroundedDecimal(instance.player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()*100));
+
+
+        for (int i =0; i<displaystat.size(); i++) {
+
+            int x =  ((stringx) - instance.fontRenderer.getStringWidth(displaystat.get(i)) / 2);
+
+            int y = stringy + (11*i);
+
+
+
+
+            instance.fontRenderer.drawString(displaystat.get(i),x,y,Color.WHITE.getRGB());
 
 
         }
 
-        deductheight+=16*.8;
 
-       instance.fontRenderer.drawString( getroundedDecimal(instance.player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()), stringwidth, deductheight, Color.WHITE.getRGB());
-
-
-        GlStateManager.popMatrix();
 
 
     }
 
 
-public String getroundedDecimal(double decimal) {
-      DecimalFormat df = new DecimalFormat("0.00");
+    public String getroundedDecimal(double decimal) {
+        DecimalFormat df = new DecimalFormat("0.00");
 
-      df.setRoundingMode(RoundingMode.UP);
+        df.setRoundingMode(RoundingMode.UP);
         return  df.format(decimal);
 
 
 
-}
+    }
+
+
 
     public void renderXPBar(RenderGameOverlayEvent event) {
 
@@ -161,15 +187,19 @@ public String getroundedDecimal(double decimal) {
         IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
         IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
 
-         int width = (scaledresolution.getScaledWidth()/2)-60;
-         int height = (scaledresolution.getScaledHeight())-20;
+         int xpos = (scaledresolution.getScaledWidth()/2)-70;
+         int ypos = (scaledresolution.getScaledHeight())-20;
          instance.textureManager.bindTexture(mobahud);
          double xpRatio = playerData.getLevel() != 20 ? (((entityData.getExperience().getValue() )  / SkyRift.getLevelupExp(playerData.getLevel()+1))) : 1;
 
-         drawTexturedModalRect(width, height, 2, 49, 20, 20, -2);
-         drawTexturedModalRect(width + 1, (int) ((height + 20) - (18*xpRatio)), 3,  (70),18, (int) (18*xpRatio), -1);
+         String xpString = Integer.toString(playerData.getLevel());
+        int x =  ((xpos+10) - instance.fontRenderer.getStringWidth(xpString) / 2);
 
-         instance.fontRenderer.drawString(Integer.toString(playerData.getLevel()), width+6, height+6, Color.WHITE.getRGB());
+
+         drawTexturedModalRect(xpos, ypos, 2, 49, 20, 20, -2);
+         drawTexturedModalRect(xpos + 1, (int) ((ypos + 19) - (18*xpRatio)), 3,  (70),18, (int) (18*xpRatio), -1);
+
+         instance.fontRenderer.drawString(xpString, x, ypos+6, Color.WHITE.getRGB());
 
 
 
@@ -192,16 +222,17 @@ public String getroundedDecimal(double decimal) {
             int offset =  10;
 
             int height = scaledresolution.getScaledHeight()-offset;
-            int width = (scaledresolution.getScaledWidth()/2)-40;
+            int width = (scaledresolution.getScaledWidth()/2)-50;
             String hp = Math.round(entityData.getResourceAmount()) + "/" + Math.round(entityData.getMaxResourceAmount().getValue());
 
-            int hpwidth =(scaledresolution.getScaledWidth()/2)-10;
+            int hpwidth =(scaledresolution.getScaledWidth()/2);
             int hpheight = height+1;
+            int x =  (hpwidth - instance.fontRenderer.getStringWidth(hp) / 2);
             instance.textureManager.bindTexture(playerData.getChampion().getResource().RESOURCE_TEXTURES);
             double healthRatio = (((entityData.getResourceAmount() )  /entityData.getMaxResourceAmount().getValue()));
             drawTexturedModalRect(width, height, 0, 0, 100, 10, 0);
             drawTexturedModalRect(width + 1, height + 1, 1, 11, (int) (98 * healthRatio), 8, -1);
-            instance.fontRenderer.drawString(hp, hpwidth, hpheight, Color.WHITE.getRGB());
+            instance.fontRenderer.drawString(hp, x, hpheight, Color.WHITE.getRGB());
 
         }
 
@@ -220,23 +251,94 @@ public String getroundedDecimal(double decimal) {
         int offset = playerData.getChampion().getResource()==NONE ? 10 : 20;
 
         int height = scaledresolution.getScaledHeight()-offset;
-        int width = (scaledresolution.getScaledWidth()/2)-40;
+        int width = (scaledresolution.getScaledWidth()/2)-50;
         String hp = Math.round(entityData.getHealth()) + "/" + Math.round(entityData.getMaxHealth().getValue());
 
-        int hpwidth =(scaledresolution.getScaledWidth()/2)-10;
+
+        int hpwidth =(scaledresolution.getScaledWidth()/2);
         int hpheight = height+1;
+        int x =  (hpwidth - instance.fontRenderer.getStringWidth(hp) / 2);
+
         instance.textureManager.bindTexture(hpbar);
         double healthRatio = (((entityData.getHealth() )  /entityData.getMaxHealth().getValue()));
         drawTexturedModalRect(width, height, 0, 0, 100, 10, -1);
         drawTexturedModalRect(width + 1, height + 1, 1, 11, (int) (98 * healthRatio), 8, 0);
 
-        instance.fontRenderer.drawString(hp, hpwidth, hpheight, Color.WHITE.getRGB());
-
+        instance.fontRenderer.drawString(hp, x, hpheight, Color.WHITE.getRGB());
 
     }
 
 
     public void renderAbilities(RenderGameOverlayEvent event) {
+
+
+
+        MainWindow scaledresolution = instance.mainWindow;
+
+
+        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+
+        int yoffset = playerData.getChampion().getResource()==NONE ? 10 : 20;
+
+        int y = scaledresolution.getScaledHeight()-(yoffset+36);
+        int x = (scaledresolution.getScaledWidth()/2);
+
+        x =  (x - 86 / 2);
+        instance.textureManager.bindTexture(mobahud);
+
+        for (int i =0; i <4;i++) {
+
+            //Ability Displays
+            drawTexturedModalRect(x+(22*i), y, 2, 2, 20, 20, -3);
+
+            int rankposx=x+(22*i) +3;
+            int rankposy = y+22;
+
+            for (int g = 0; g <5;g++) {
+
+                //Ability Ranking
+                drawTexturedModalRect(rankposx+(3*g),rankposy,5,23,2,2,-2);
+
+
+
+            }
+            //Keybinding Reminder
+            drawTexturedModalRect(rankposx+3,rankposy+3,30,29,8,8,-1);
+            KeyBinding binding = KeyBindings.abilitybindings[i];
+            String text = "";
+            if (binding.getKey().getKeyCode()==-1) {
+                text="UKN";
+            }
+            else if  (binding.getKey().getKeyCode()==0) {
+
+                text="LMB";
+
+            }
+            else if  (binding.getKey().getKeyCode()==1) {
+
+                text="RMB";
+
+            }
+            else if  (binding.getKey().getKeyCode()==2) {
+
+                text="MMB";
+
+            } else {
+
+                text=binding.getLocalizedName().toUpperCase();
+            }
+
+            int stringx =  ((rankposx+8) - instance.fontRenderer.getStringWidth(text) / 2);
+            instance.fontRenderer.drawString(text, stringx, rankposy+4, Color.WHITE.getRGB());
+
+
+
+
+
+        }
+
+
 
     }
 

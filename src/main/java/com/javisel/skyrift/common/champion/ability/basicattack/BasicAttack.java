@@ -5,9 +5,17 @@ import com.javisel.skyrift.common.champion.ability.EnumAbilityTags;
 
 public class BasicAttack extends AbstractAbility {
 
-    protected BasicAttack(String name,Properties properties, EnumAbilityTags...tags) {
+    public BasicAttack(String name,Properties properties, EnumAbilityTags...tags) {
         super(name, properties,tags);
     }
+
+
+
+
+
+
+
+
 
 
 

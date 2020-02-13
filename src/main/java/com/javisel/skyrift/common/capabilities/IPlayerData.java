@@ -1,7 +1,13 @@
 package com.javisel.skyrift.common.capabilities;
 
 import com.javisel.skyrift.common.champion.Champion;
+import com.javisel.skyrift.common.champion.ability.AbstractAbility;
+import com.javisel.skyrift.common.items.SkyRiftItem;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+
+import java.util.ArrayList;
 
 public interface IPlayerData {
 
@@ -15,7 +21,9 @@ public interface IPlayerData {
     CompoundNBT getChampionData();
     void loadNBT(CompoundNBT nbt);
     void resetData();
-
+    void tick(PlayerEntity player);
+    ArrayList<ItemStack> getAbilities();
+    ArrayList<ItemStack> getItems();
 
 
 

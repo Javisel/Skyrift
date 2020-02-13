@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "skyrift:champion/pyro/kit/pyro_ability_4"
+  }
+}
