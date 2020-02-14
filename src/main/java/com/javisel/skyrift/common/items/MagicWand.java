@@ -60,10 +60,10 @@ public class MagicWand extends Item {
 
             }
 
-            if (p_77659_2_.isSneaking()) {
+            if (p_77659_2_.isCrouching()) {
                 entityData.getExperience().removeAllModifiers();
                 playerData.setLevel(1);
-                Collection c = entityData.getExperience().getModifiers();
+                Collection c = entityData.getExperience().func_225505_c_();
 
                 for (Object o : c) {
 

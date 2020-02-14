@@ -73,7 +73,7 @@ public class SkyriftUtilities {
             levelUp(player);
 
             double newvalue = entityData.getExperience().getValue() - SkyRift.getLevelupExp(playerData.getLevel());
-            Collection c = entityData.getExperience().getModifiers();
+            Collection c = entityData.getExperience().func_225505_c_();
 
             for (Object o : c) {
 

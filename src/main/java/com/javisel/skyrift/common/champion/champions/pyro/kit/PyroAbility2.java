@@ -6,6 +6,6 @@ import com.javisel.skyrift.common.registration.ItemProperties;
 
 public class PyroAbility2 extends AbstractAbility {
     public PyroAbility2() {
-        super("pyro_ability_2", ItemProperties.SPELL_PROPERTIES, EnumAbilityTags.BUFF,EnumAbilityTags.MOVEMENT,EnumAbilityTags.SELFISH);
+        super("pyro_ability_2", ItemProperties.SPELL_PROPERTIES, EnumAbilityTags.BUFF, EnumAbilityTags.MOVEMENT, EnumAbilityTags.SELFISH);
     }
 }

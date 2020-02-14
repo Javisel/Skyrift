@@ -13,23 +13,21 @@ public class MeleeBasicAttack extends BasicAttack {
 
 
     protected MeleeBasicAttack(String name, Properties properties) {
-        super(name, properties,EnumAbilityTags.BASICATTACK);
+        super(name, properties, EnumAbilityTags.BASICATTACK);
     }
 
     @Override
     public void setData(PlayerEntity entity, ItemStack stack) {
-        super.setData(entity,stack);
+        super.setData(entity, stack);
 
-        stack.getTag().putFloat(SWINGAMOUNT,0f);
-        stack.getTag().putFloat(BASIC_ATTACK_SCALING,100);
+        stack.getTag().putFloat(SWINGAMOUNT, 0f);
+        stack.getTag().putFloat(BASIC_ATTACK_SCALING, 100);
 
     }
 
 
     @Override
     public boolean hitEntity(ItemStack p_77644_1_, LivingEntity p_77644_2_, LivingEntity p_77644_3_) {
-
-
 
 
         return super.hitEntity(p_77644_1_, p_77644_2_, p_77644_3_);
@@ -49,9 +47,7 @@ public class MeleeBasicAttack extends BasicAttack {
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
 
 
-            stack.getTag().putFloat(SWINGAMOUNT,player.getCooledAttackStrength(0) );
-
-
+        stack.getTag().putFloat(SWINGAMOUNT, player.getCooledAttackStrength(0));
 
 
         return false;
@@ -68,11 +64,6 @@ public class MeleeBasicAttack extends BasicAttack {
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         return false;
     }
-
-
-
-
-
 
 
 }

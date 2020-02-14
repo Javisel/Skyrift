@@ -11,7 +11,7 @@ import static com.javisel.skyrift.main.SkyRift.SWINGAMOUNT;
 
 public class PyroBasicAttack extends BasicAttack {
     public PyroBasicAttack() {
-        super("pyro_basic_attack", ItemProperties.MELEE_BASIC_ATTACK_PROPERTIES,EnumAbilityTags.BASICATTACK);
+        super("pyro_basic_attack", ItemProperties.MELEE_BASIC_ATTACK_PROPERTIES, EnumAbilityTags.BASICATTACK);
     }
 
     /**
@@ -27,9 +27,9 @@ public class PyroBasicAttack extends BasicAttack {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
 
-        if (super.isCastable(player,stack)) {
+        if (super.isCastable(player, stack)) {
 
-            stack.getTag().putFloat(SWINGAMOUNT,player.getCooledAttackStrength(0));
+            stack.getTag().putFloat(SWINGAMOUNT, player.getCooledAttackStrength(0));
 
 
         }
@@ -37,11 +37,6 @@ public class PyroBasicAttack extends BasicAttack {
 
         return false;
     }
-
-
-
-
-
 
 
 }

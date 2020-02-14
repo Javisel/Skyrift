@@ -7,8 +7,7 @@ import net.minecraft.item.Item;
 public class PyroPassive extends AbstractAbility {
 
 
-
     public PyroPassive() {
-        super("pyro_passive", new Item.Properties().maxStackSize(1), EnumAbilityTags.BUFF,EnumAbilityTags.PASSIVE,EnumAbilityTags.AOE);
+        super("pyro_passive", new Item.Properties().maxStackSize(1), EnumAbilityTags.BUFF, EnumAbilityTags.PASSIVE, EnumAbilityTags.AOE);
     }
 }

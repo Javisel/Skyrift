@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.fml.common.Mod;
 
 import java.awt.*;
@@ -40,6 +40,7 @@ public class OverlayHandler extends GuiUtils {
     private final ResourceLocation mobahud = new ResourceLocation(SkyRift.MODID, "textures/gui/overlay/mobahud.png");
     private final ResourceLocation hpbar = new ResourceLocation(SkyRift.MODID, "textures/gui/overlay/healthbar.png");
     Minecraft instance = Minecraft.getInstance();
+
 
     @SubscribeEvent
     public void overlayOverride(RenderGameOverlayEvent event) {
@@ -79,7 +80,7 @@ public class OverlayHandler extends GuiUtils {
 
     public void renderItemSet(RenderGameOverlayEvent event) {
 
-        MainWindow scaledresolution = instance.mainWindow;
+        MainWindow scaledresolution = instance.getMainWindow();
 
 
         IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
@@ -107,7 +108,7 @@ public class OverlayHandler extends GuiUtils {
 
     public void renderStatBar(RenderGameOverlayEvent event) {
 
-        MainWindow scaledresolution = instance.mainWindow;
+        MainWindow scaledresolution = instance.getMainWindow();
 
 
         IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
@@ -166,7 +167,7 @@ public class OverlayHandler extends GuiUtils {
 
     public void renderXPBar(RenderGameOverlayEvent event) {
 
-        MainWindow scaledresolution = instance.mainWindow;
+        MainWindow scaledresolution = instance.getMainWindow();
 
 
         IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
@@ -195,7 +196,7 @@ public class OverlayHandler extends GuiUtils {
 
         if (playerData.getChampion().getResource() != NONE) {
 
-            MainWindow scaledresolution = instance.mainWindow;
+            MainWindow scaledresolution = instance.getMainWindow();
 
             IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
@@ -221,7 +222,7 @@ public class OverlayHandler extends GuiUtils {
     }
 
     public void renderHealthBar(RenderGameOverlayEvent event) {
-        MainWindow scaledresolution = instance.mainWindow;
+        MainWindow scaledresolution = instance.getMainWindow();
 
 
         IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
@@ -252,7 +253,7 @@ public class OverlayHandler extends GuiUtils {
     public void renderAbilities(RenderGameOverlayEvent event) {
 
 
-        MainWindow scaledresolution = instance.mainWindow;
+        MainWindow scaledresolution = instance.getMainWindow();
 
 
         IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
@@ -281,8 +282,8 @@ public class OverlayHandler extends GuiUtils {
 
             GlStateManager.enableRescaleNormal();
             GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            RenderHelper.enableGUIStandardItemLighting();
+            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA.param, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA.param, GlStateManager.SourceFactor.ONE.param, GlStateManager.DestFactor.ZERO.param);
+            RenderHelper.enableStandardItemLighting();
 
             if (playerData.getAbilities().size() > 2) {
                 renderHotbarItem(x + 2 + (22 * i), y + 2, event.getPartialTicks(), instance.player, playerData.getAbilities().get(2 + i));

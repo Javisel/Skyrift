@@ -6,7 +6,7 @@ import com.javisel.skyrift.common.registration.ItemProperties;
 
 public class PyroAbility3 extends AbstractAbility {
     public PyroAbility3() {
-        super("pyro_ability_3", ItemProperties.SPELL_PROPERTIES, EnumAbilityTags.BUFF,EnumAbilityTags.HEALING,EnumAbilityTags.SELFISH);
+        super("pyro_ability_3", ItemProperties.SPELL_PROPERTIES, EnumAbilityTags.BUFF, EnumAbilityTags.HEALING, EnumAbilityTags.SELFISH);
     }
 }
 
