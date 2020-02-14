@@ -1,6 +1,5 @@
 package com.javisel.skyrift.common.network;
 
-import com.javisel.skyrift.common.capabilities.EntityData;
 import com.javisel.skyrift.common.capabilities.EntityDataProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
@@ -11,7 +10,7 @@ import java.util.function.Supplier;
 
 public class EntityDataMessage {
 
-    public  CompoundNBT nbt;
+    public CompoundNBT nbt;
 
 
     public EntityDataMessage(CompoundNBT nbtag) {
@@ -39,7 +38,6 @@ public class EntityDataMessage {
 
                 Minecraft minecraft = Minecraft.getInstance();
                 minecraft.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new).loadNBT(mes.nbt);
-                System.out.println("Client EXP:" + minecraft.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new).getExperience().getValue());
             });
 
             ctx.get().setPacketHandled(true);

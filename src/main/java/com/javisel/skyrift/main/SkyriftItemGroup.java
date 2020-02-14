@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 public class SkyriftItemGroup extends ItemGroup {
     public SkyriftItemGroup() {
-        super(SkyRift.MODID+"_itemgroup");
+        super(SkyRift.MODID + "_itemgroup");
     }
 
     @Override

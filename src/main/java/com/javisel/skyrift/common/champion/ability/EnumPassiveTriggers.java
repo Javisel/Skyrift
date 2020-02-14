@@ -7,12 +7,4 @@ public enum EnumPassiveTriggers {
     HEALING,
 
 
-
-
-
-
-
-
-
-
 }

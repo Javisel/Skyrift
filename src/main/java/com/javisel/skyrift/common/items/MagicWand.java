@@ -9,7 +9,6 @@ import com.javisel.skyrift.common.network.PlayerDataMessage;
 import com.javisel.skyrift.common.registration.PacketRegistration;
 import com.javisel.skyrift.main.SkyRift;
 import com.javisel.skyrift.main.SkyriftUtilities;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -17,19 +16,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.UUID;
 
-import static com.javisel.skyrift.main.SkyriftAttributes.MAGICAL_POWER;
+import static com.javisel.skyrift.main.SkyRift.RANK;
 
 
 public class MagicWand extends Item {
-
 
 
     public MagicWand() {
@@ -53,12 +49,10 @@ public class MagicWand extends Item {
         if (!p_77659_1_.isRemote) {
 
 
-
-            IEntityData entityData = p_77659_2_.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
-
+            IEntityData entityData = p_77659_2_.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
 
-            IPlayerData playerData = p_77659_2_.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+            IPlayerData playerData = p_77659_2_.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
 
             if (!playerData.isChampion()) {
@@ -81,18 +75,16 @@ public class MagicWand extends Item {
                 }
 
 
-
                 PacketRegistration.HANDLER.sendTo(new PlayerDataMessage(playerData.writeNBT()), ((ServerPlayerEntity) p_77659_2_).connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
                 PacketRegistration.HANDLER.sendTo(new EntityDataMessage(entityData.writeNBT()), ((ServerPlayerEntity) p_77659_2_).connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
 
-            }  else
-            {
-                entityData.getPhysicalPower().applyModifier(new AttributeModifier(UUID.randomUUID(),"bonus physical power",20, AttributeModifier.Operation.ADDITION));
-                entityData.getMagicalPower().applyModifier(new AttributeModifier(UUID.randomUUID(),"bonus magic power",20, AttributeModifier.Operation.ADDITION));
-                entityData.getArmor().applyModifier(new AttributeModifier(UUID.randomUUID(),"bonus physical power",20, AttributeModifier.Operation.ADDITION));
-                entityData.getMagicResist().applyModifier(new AttributeModifier(UUID.randomUUID(),"bonus magic power",20, AttributeModifier.Operation.ADDITION));
+            } else {
+                entityData.getPhysicalPower().applyModifier(new AttributeModifier(UUID.randomUUID(), "bonus physical power", 20, AttributeModifier.Operation.ADDITION));
+                entityData.getMagicalPower().applyModifier(new AttributeModifier(UUID.randomUUID(), "bonus magic power", 20, AttributeModifier.Operation.ADDITION));
+                entityData.getArmor().applyModifier(new AttributeModifier(UUID.randomUUID(), "bonus physical power", 20, AttributeModifier.Operation.ADDITION));
+                entityData.getMagicResist().applyModifier(new AttributeModifier(UUID.randomUUID(), "bonus magic power", 20, AttributeModifier.Operation.ADDITION));
 
-
+                playerData.getAbilities().get(2).getTag().putInt(RANK, playerData.getAbilities().get(2).getTag().getInt(RANK) + 1);
                 SkyriftUtilities.addExp(p_77659_2_, 50);
 
             }

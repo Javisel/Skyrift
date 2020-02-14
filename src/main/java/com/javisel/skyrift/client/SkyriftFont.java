@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 public class SkyriftFont extends FontRenderer {
 
 
-
     public SkyriftFont(TextureManager p_i49744_1_, Font p_i49744_2_) {
         super(p_i49744_1_, p_i49744_2_);
     }

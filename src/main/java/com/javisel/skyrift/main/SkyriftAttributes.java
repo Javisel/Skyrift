@@ -8,33 +8,30 @@ import java.util.ArrayList;
 
 public class SkyriftAttributes {
 
-    public static final IAttribute MAX_HEALTH = new RangedAttribute((IAttribute)null, "skyrift.MaxHealth", 0, 0.0D, 1000000).setDescription("A entity's health.").setShouldWatch(true);
+    public static final IAttribute MAX_HEALTH = new RangedAttribute(null, "skyrift.MaxHealth", 0, 0.0D, 1000000).setDescription("A entity's health.").setShouldWatch(true);
 
-    public static final IAttribute ATTACK_DAMAGE = new RangedAttribute((IAttribute)null, "skyrift.AttackDamage", 0, 0.0D, 10000).setDescription("Determines how much damage a basic attack will do.").setShouldWatch(true);
-    public static final IAttribute MAGICAL_POWER = new RangedAttribute((IAttribute)null, "skyrift.MagicalPower", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute PHYSICAL_POWER = new RangedAttribute((IAttribute)null, "skyrift.PhysicalPower", 0, 0.0D, 10000).setDescription("The Physical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute CRITCHANCE = new RangedAttribute((IAttribute)null, "skyrift.CritChance", 0, 0.0D, 10000).setDescription("The Critical Strike Chance of an entity.").setShouldWatch(true);
-    public static final IAttribute CRITDAMAGE = new RangedAttribute((IAttribute)null, "skyrift.CritDamage", 2.0D, 0.0D, 10000).setDescription("The Critical Strike Multiplier.").setShouldWatch(true);
-    public static final IAttribute LIFESTEAL = new RangedAttribute((IAttribute)null, "skyrift.Lifesteal", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute FLATARMORPEN = new RangedAttribute((IAttribute)null, "skyrift.FlatArmorPen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute FLATMAGICPEN = new RangedAttribute((IAttribute)null, "skyrift.FlatMagicPen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute PERCENTARMORPEN = new RangedAttribute((IAttribute)null, "skyrift.PercentArmorPen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute PERCENTMAGICPEN = new RangedAttribute((IAttribute)null, "skyrift.PercentMagicPen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-   
-    public static final IAttribute SPELLVAMP = new RangedAttribute((IAttribute)null, "skyrift.SpellVamp", 2.0D, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute HEALTH_REGEN = new RangedAttribute((IAttribute)null, "skyrift.HealthRegen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute ARMOR = new RangedAttribute((IAttribute)null, "skyrift.Armor", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute MAGIC_RESIST = new RangedAttribute((IAttribute)null, "skyrift.MagicResist", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute MAX_RESOURCE_AMOUNT = new RangedAttribute((IAttribute)null, "skyrift.MaxResourceAmount", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute RESOURCE_REGEN = new RangedAttribute((IAttribute)null, "skyrift.ResourceRegen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute COOLDOWN_REDUCTION = new RangedAttribute((IAttribute)null, "skyrift.CooldownReduction", 2.0D, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute EXPERIENCE = new RangedAttribute((IAttribute)null, "skyrift.Experience", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute GOLD_GENERATION = new RangedAttribute((IAttribute)null, "skyrift.GoldGeneration", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute RANGE = new RangedAttribute((IAttribute)null, "skyrift.Range", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute ATTACK_DAMAGE = new RangedAttribute(null, "skyrift.AttackDamage", 0, 0.0D, 10000).setDescription("Determines how much damage a basic attack will do.").setShouldWatch(true);
+    public static final IAttribute MAGICAL_POWER = new RangedAttribute(null, "skyrift.MagicalPower", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute PHYSICAL_POWER = new RangedAttribute(null, "skyrift.PhysicalPower", 0, 0.0D, 10000).setDescription("The Physical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute CRITCHANCE = new RangedAttribute(null, "skyrift.CritChance", 0, 0.0D, 10000).setDescription("The Critical Strike Chance of an entity.").setShouldWatch(true);
+    public static final IAttribute CRITDAMAGE = new RangedAttribute(null, "skyrift.CritDamage", 2.0D, 0.0D, 10000).setDescription("The Critical Strike Multiplier.").setShouldWatch(true);
+    public static final IAttribute LIFESTEAL = new RangedAttribute(null, "skyrift.Lifesteal", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute FLATARMORPEN = new RangedAttribute(null, "skyrift.FlatArmorPen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute FLATMAGICPEN = new RangedAttribute(null, "skyrift.FlatMagicPen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute PERCENTARMORPEN = new RangedAttribute(null, "skyrift.PercentArmorPen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute PERCENTMAGICPEN = new RangedAttribute(null, "skyrift.PercentMagicPen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+
+    public static final IAttribute SPELLVAMP = new RangedAttribute(null, "skyrift.SpellVamp", 2.0D, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute HEALTH_REGEN = new RangedAttribute(null, "skyrift.HealthRegen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute ARMOR = new RangedAttribute(null, "skyrift.Armor", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute MAGIC_RESIST = new RangedAttribute(null, "skyrift.MagicResist", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute MAX_RESOURCE_AMOUNT = new RangedAttribute(null, "skyrift.MaxResourceAmount", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute RESOURCE_REGEN = new RangedAttribute(null, "skyrift.ResourceRegen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute COOLDOWN_REDUCTION = new RangedAttribute(null, "skyrift.CooldownReduction", 2.0D, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute EXPERIENCE = new RangedAttribute(null, "skyrift.Experience", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute GOLD_GENERATION = new RangedAttribute(null, "skyrift.GoldGeneration", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute RANGE = new RangedAttribute(null, "skyrift.Range", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
     public static ArrayList<IAttribute> attributes = new ArrayList<>();
-
-
-
 
 
     static {
@@ -91,12 +88,7 @@ public class SkyriftAttributes {
         attributeMap.registerAttribute(RESOURCE_REGEN);
 
 
-
     }
-
-
-
-
 
 
 }

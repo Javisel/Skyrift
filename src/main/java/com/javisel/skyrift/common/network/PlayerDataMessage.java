@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 public class PlayerDataMessage {
 
-    public static  CompoundNBT nbt;
+    public static CompoundNBT nbt;
 
 
     public PlayerDataMessage(CompoundNBT nbtag) {
@@ -37,7 +37,7 @@ public class PlayerDataMessage {
             ctx.get().enqueueWork(() -> {
 
                 Minecraft minecraft = Minecraft.getInstance();
-                minecraft.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new).loadNBT(mes.nbt);
+                minecraft.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new).loadNBT(nbt);
 
             });
 

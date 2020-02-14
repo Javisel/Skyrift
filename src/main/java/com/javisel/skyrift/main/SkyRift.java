@@ -3,17 +3,11 @@ package com.javisel.skyrift.main;
 import com.javisel.skyrift.client.KeyBindings;
 import com.javisel.skyrift.client.OverlayHandler;
 import com.javisel.skyrift.common.capabilities.*;
-import com.javisel.skyrift.common.champion.ChampionDatabase;
 import com.javisel.skyrift.common.registration.CapabilityRegistration;
-import com.javisel.skyrift.common.registration.ItemRegistration;
 import com.javisel.skyrift.common.registration.PacketRegistration;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
@@ -43,12 +37,12 @@ public class SkyRift {
     //MODES: 0 - default, 1-Targeting, 2-Active
     public static final String SWINGAMOUNT = "swingamount";
     public static final String BASIC_ATTACK_SCALING = "bas";
-    public static final String BASE_VALUE ="basevalue";
-    public static final String DISPLAYDATA ="displaydata";
+    public static final String BASE_VALUE = "basevalue";
+    public static final String DISPLAYDATA = "displaydata";
 
     public static final String MODID = "skyrift";
-    public static ItemGroup skyriftgroup  =new SkyriftItemGroup();
-    private static final IAttribute[] ATTRIBUTES = new IAttribute[] { MAX_HEALTH, FOLLOW_RANGE, KNOCKBACK_RESISTANCE, MOVEMENT_SPEED, FLYING_SPEED, ATTACK_DAMAGE, ATTACK_SPEED, ARMOR, ARMOR_TOUGHNESS, LUCK };
+    private static final IAttribute[] ATTRIBUTES = new IAttribute[]{MAX_HEALTH, FOLLOW_RANGE, KNOCKBACK_RESISTANCE, MOVEMENT_SPEED, FLYING_SPEED, ATTACK_DAMAGE, ATTACK_SPEED, ARMOR, ARMOR_TOUGHNESS, LUCK};
+    public static ItemGroup skyriftgroup = new SkyriftItemGroup();
 
     public SkyRift() {
         // Register the setup method for modloading
@@ -67,19 +61,19 @@ public class SkyRift {
 
     }
 
+    public static float getLevelupExp(int level) {
+
+
+        return 308 + (55 * (level - 2));
+
+
+    }
+
     private void setup(final FMLCommonSetupEvent event) {
         // some preinit code
         CapabilityManager.INSTANCE.register(IEntityData.class, new EntityDataStorage(), EntityData::new);
         CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayerDataStorage(), PlayerData::new);
         PacketRegistration.register();
-
-    }
-
-    public static float getLevelupExp(int level) {
-
-
-        return 308+(55*(level-2));
-
 
     }
 
@@ -109,7 +103,6 @@ public class SkyRift {
     // Event bus for receiving Registry Events)
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
-
 
 
         @SubscribeEvent

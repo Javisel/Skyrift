@@ -1,6 +1,5 @@
 package com.javisel.skyrift.common.registration;
 
-import com.javisel.skyrift.common.champion.champions.pyro.Pyro;
 import com.javisel.skyrift.common.champion.champions.pyro.PyroSoulStone;
 import com.javisel.skyrift.common.items.MagicWand;
 import com.javisel.skyrift.main.SkyRift;
@@ -17,7 +16,7 @@ import net.minecraftforge.registries.ObjectHolder;
 public class ItemRegistration {
 
     public static Item MAGIC_WAND = null;
-    public static  Item PYRO_SOUL_STONE = null;
+    public static Item PYRO_SOUL_STONE = null;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerItems(final RegistryEvent.Register<Item> event) {
@@ -27,8 +26,6 @@ public class ItemRegistration {
 
                         MAGIC_WAND = new MagicWand(),
                         PYRO_SOUL_STONE = new PyroSoulStone()
-
-
 
 
                 );

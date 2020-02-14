@@ -1,13 +1,8 @@
 package com.javisel.skyrift.common.items;
 
-import com.javisel.skyrift.common.capabilities.EntityDataProvider;
-import com.javisel.skyrift.common.capabilities.IEntityData;
-import com.javisel.skyrift.common.capabilities.IPlayerData;
-import com.javisel.skyrift.common.capabilities.PlayerDataProvider;
 import com.javisel.skyrift.common.champion.Champion;
 import com.javisel.skyrift.main.SkyRift;
 import com.javisel.skyrift.main.SkyriftUtilities;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,20 +12,17 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-import java.util.UUID;
-
 public abstract class SoulStone extends Item {
 
-   private   Champion champion;
+    private Champion champion;
 
     public SoulStone(Champion champion) {
         super(new Properties().maxStackSize(1).group(SkyRift.skyriftgroup));
-            this.champion=champion;
-        setRegistryName(champion.getName()+"_soul_stone");
+        this.champion = champion;
+        setRegistryName(champion.getName() + "_soul_stone");
 
 
     }
-
 
 
     @Override
@@ -40,26 +32,13 @@ public abstract class SoulStone extends Item {
         if (!p_77659_1_.isRemote) {
 
 
-
-
-                    SkyriftUtilities.InitializeChampion(playerEntity,champion);
-                 playerEntity.sendMessage(new StringTextComponent( " Acquired " + TextFormatting.BOLD + champion.getName() +"'s powers!"  ));
-
-
-
-
-
-
+            SkyriftUtilities.InitializeChampion(playerEntity, champion);
+            playerEntity.sendMessage(new StringTextComponent(" Acquired " + TextFormatting.BOLD + champion.getName() + "'s powers!"));
 
 
         }
         return super.onItemRightClick(p_77659_1_, playerEntity, p_77659_3_);
     }
-
-
-
-
-
 
 
 }

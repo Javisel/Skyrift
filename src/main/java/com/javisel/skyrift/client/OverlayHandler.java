@@ -1,87 +1,79 @@
 package com.javisel.skyrift.client;
 
-import com.javisel.skyrift.common.capabilities.*;
+import com.javisel.skyrift.common.capabilities.EntityDataProvider;
+import com.javisel.skyrift.common.capabilities.IEntityData;
+import com.javisel.skyrift.common.capabilities.IPlayerData;
+import com.javisel.skyrift.common.capabilities.PlayerDataProvider;
 import com.javisel.skyrift.main.SkyRift;
 import com.javisel.skyrift.main.SkyriftUtilities;
 import com.mojang.blaze3d.platform.GlStateManager;
-import cpw.mods.modlauncher.api.IEnvironment;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IngameGui;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.opengl.GL;
 
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 
+import static com.javisel.skyrift.common.champion.ability.AbstractAbility.*;
 import static com.javisel.skyrift.common.champion.resource.Resource.Resources.NONE;
+import static com.javisel.skyrift.main.SkyRift.*;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class OverlayHandler extends GuiUtils {
 
-    Minecraft instance = Minecraft.getInstance();
     private final ResourceLocation mobahud = new ResourceLocation(SkyRift.MODID, "textures/gui/overlay/mobahud.png");
     private final ResourceLocation hpbar = new ResourceLocation(SkyRift.MODID, "textures/gui/overlay/healthbar.png");
-
+    Minecraft instance = Minecraft.getInstance();
 
     @SubscribeEvent
     public void overlayOverride(RenderGameOverlayEvent event) {
 
-            if (instance.player.isCreative() || !SkyriftUtilities.isChampion(instance.player) || !instance.player.isAlive()) {
-            } else {
-                if (event.getType()== RenderGameOverlayEvent.ElementType.EXPERIENCE) {
-                    event.setCanceled(true);
-                    renderXPBar(event);
-                }
+        if (instance.player.isCreative() || !SkyriftUtilities.isChampion(instance.player) || !instance.player.isAlive()) {
+        } else {
+            if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
+                event.setCanceled(true);
+                renderXPBar(event);
+            } else if (event.getType() == RenderGameOverlayEvent.ElementType.FOOD) {
+                event.setCanceled(true);
+                renderResourceBar(event);
 
-              else if (event.getType()== RenderGameOverlayEvent.ElementType.FOOD) {
-                    event.setCanceled(true);
-                    renderResourceBar(event);
-
-                }
-              else if (event.getType()== RenderGameOverlayEvent.ElementType.HEALTH) {
-                  event.setCanceled(true);
-                  renderHealthBar(event);
+            } else if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH) {
+                event.setCanceled(true);
+                renderHealthBar(event);
 
 
-                }
-              else if (event.getType()== RenderGameOverlayEvent.ElementType.HOTBAR) {
-                  event.setCanceled(true);
-                  renderAbilities(event);
+            } else if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
+                event.setCanceled(true);
+                renderAbilities(event);
 
-                }
+            } else if (event.getType() == RenderGameOverlayEvent.ElementType.AIR) {
+                event.setCanceled(true);
+            } else if (event.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
+                event.setCanceled(true);
 
-              else if (event.getType()== RenderGameOverlayEvent.ElementType.AIR) {
-                  event.setCanceled(true);
-                }
-              else if (event.getType()==RenderGameOverlayEvent.ElementType.ARMOR) {
-                  event.setCanceled(true);
-
-                }
-                else if (event.getType()==RenderGameOverlayEvent.ElementType.JUMPBAR) {
-                    event.setCanceled(true);
-                }
-                renderStatBar(event);
-                renderItemSet(event);
-
+            } else if (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
+                event.setCanceled(true);
             }
+            renderStatBar(event);
+            renderItemSet(event);
+
+        }
 
     }
 
@@ -90,78 +82,73 @@ public class OverlayHandler extends GuiUtils {
         MainWindow scaledresolution = instance.mainWindow;
 
 
-        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
-        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
         int width = 40;
-        int height = scaledresolution.getScaledHeight()-7;
+        int height = scaledresolution.getScaledHeight() - 7;
 
         instance.textureManager.bindTexture(mobahud);
 
-            for (int y = 1; y <3; y++) {
+        for (int y = 1; y < 3; y++) {
 
-            for (int x= 0; x <3;x++) {
-                drawTexturedModalRect(width+(17*x), height-(17*y), 45, 144, 18, 18, -2);
+            for (int x = 0; x < 3; x++) {
+                drawTexturedModalRect(width + (17 * x), height - (17 * y), 45, 144, 18, 18, -2);
 
             }
 
         }
 
-            String gold = Float.toString(entityData.getGold());
+        String gold = Float.toString(entityData.getGold());
 
         drawTexturedModalRect(width, height, 45, 162, 62, 7, -2);
 
     }
+
     public void renderStatBar(RenderGameOverlayEvent event) {
 
         MainWindow scaledresolution = instance.mainWindow;
 
 
-        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
-        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
         int width = 0;
-        int height = scaledresolution.getScaledHeight()-78;
+        int height = scaledresolution.getScaledHeight() - 78;
 
         instance.textureManager.bindTexture(mobahud);
-        drawTexturedModalRect(width,height,1,91,40,78,-2);
+        drawTexturedModalRect(width, height, 1, 91, 40, 78, -2);
 
-        int  stringx = width+26;
-        int stringy = height+2;
+        int stringx = width + 26;
+        int stringy = height + 2;
 
 
         ArrayList<String> displaystat = new ArrayList<>();
 
-        displaystat.add( Integer.toString((int)playerData.getChampion().getBasicAttackDamage(instance.player)));
-        displaystat.add( getroundedDecimal(instance.player.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).getValue()));
-
+        displaystat.add(Integer.toString((int) playerData.getChampion().getBasicAttackDamage(instance.player)));
+        displaystat.add(getroundedDecimal(instance.player.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).getValue()));
 
 
         for (IAttributeInstance attributeInstance : entityData.corestats()) {
 
-            displaystat.add( Integer.toString((int)attributeInstance.getValue()));
-
-
-
-        }
-        displaystat.add( getroundedDecimal(instance.player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()*100));
-
-
-        for (int i =0; i<displaystat.size(); i++) {
-
-            int x =  ((stringx) - instance.fontRenderer.getStringWidth(displaystat.get(i)) / 2);
-
-            int y = stringy + (11*i);
-
-
-
-
-            instance.fontRenderer.drawString(displaystat.get(i),x,y,Color.WHITE.getRGB());
+            displaystat.add(Integer.toString((int) attributeInstance.getValue()));
 
 
         }
+        displaystat.add(getroundedDecimal(instance.player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 100));
 
 
+        for (int i = 0; i < displaystat.size(); i++) {
+
+            int x = ((stringx) - instance.fontRenderer.getStringWidth(displaystat.get(i)) / 2);
+
+            int y = stringy + (11 * i);
+
+
+            instance.fontRenderer.drawString(displaystat.get(i), x, y, Color.WHITE.getRGB());
+
+
+        }
 
 
     }
@@ -171,12 +158,10 @@ public class OverlayHandler extends GuiUtils {
         DecimalFormat df = new DecimalFormat("0.00");
 
         df.setRoundingMode(RoundingMode.UP);
-        return  df.format(decimal);
-
+        return df.format(decimal);
 
 
     }
-
 
 
     public void renderXPBar(RenderGameOverlayEvent event) {
@@ -184,58 +169,53 @@ public class OverlayHandler extends GuiUtils {
         MainWindow scaledresolution = instance.mainWindow;
 
 
-        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
-        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
-         int xpos = (scaledresolution.getScaledWidth()/2)-70;
-         int ypos = (scaledresolution.getScaledHeight())-20;
-         instance.textureManager.bindTexture(mobahud);
-         double xpRatio = playerData.getLevel() != 20 ? (((entityData.getExperience().getValue() )  / SkyRift.getLevelupExp(playerData.getLevel()+1))) : 1;
+        int xpos = (scaledresolution.getScaledWidth() / 2) - 70;
+        int ypos = (scaledresolution.getScaledHeight()) - 20;
+        instance.textureManager.bindTexture(mobahud);
+        double xpRatio = playerData.getLevel() != 20 ? (((entityData.getExperience().getValue()) / SkyRift.getLevelupExp(playerData.getLevel() + 1))) : 1;
 
-         String xpString = Integer.toString(playerData.getLevel());
-        int x =  ((xpos+10) - instance.fontRenderer.getStringWidth(xpString) / 2);
-
-
-         drawTexturedModalRect(xpos, ypos, 2, 49, 20, 20, -2);
-         drawTexturedModalRect(xpos + 1, (int) ((ypos + 19) - (18*xpRatio)), 3,  (70),18, (int) (18*xpRatio), -1);
-
-         instance.fontRenderer.drawString(xpString, x, ypos+6, Color.WHITE.getRGB());
+        String xpString = Integer.toString(playerData.getLevel());
+        int x = ((xpos + 10) - instance.fontRenderer.getStringWidth(xpString) / 2);
 
 
+        drawTexturedModalRect(xpos, ypos, 2, 49, 20, 20, -2);
+        drawTexturedModalRect(xpos + 1, (int) ((ypos + 19) - (18 * xpRatio)), 3, (70), 18, (int) (18 * xpRatio), -1);
 
-
+        instance.fontRenderer.drawString(xpString, x, ypos + 6, Color.WHITE.getRGB());
 
 
     }
 
     public void renderResourceBar(RenderGameOverlayEvent event) {
 
-        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
-        if (playerData.getChampion().getResource()!=NONE) {
+        if (playerData.getChampion().getResource() != NONE) {
 
             MainWindow scaledresolution = instance.mainWindow;
 
-            IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+            IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
 
-            int offset =  10;
+            int offset = 10;
 
-            int height = scaledresolution.getScaledHeight()-offset;
-            int width = (scaledresolution.getScaledWidth()/2)-50;
+            int height = scaledresolution.getScaledHeight() - offset;
+            int width = (scaledresolution.getScaledWidth() / 2) - 50;
             String hp = Math.round(entityData.getResourceAmount()) + "/" + Math.round(entityData.getMaxResourceAmount().getValue());
 
-            int hpwidth =(scaledresolution.getScaledWidth()/2);
-            int hpheight = height+1;
-            int x =  (hpwidth - instance.fontRenderer.getStringWidth(hp) / 2);
+            int hpwidth = (scaledresolution.getScaledWidth() / 2);
+            int hpheight = height + 1;
+            int x = (hpwidth - instance.fontRenderer.getStringWidth(hp) / 2);
             instance.textureManager.bindTexture(playerData.getChampion().getResource().RESOURCE_TEXTURES);
-            double healthRatio = (((entityData.getResourceAmount() )  /entityData.getMaxResourceAmount().getValue()));
+            double healthRatio = (((entityData.getResourceAmount()) / entityData.getMaxResourceAmount().getValue()));
             drawTexturedModalRect(width, height, 0, 0, 100, 10, 0);
             drawTexturedModalRect(width + 1, height + 1, 1, 11, (int) (98 * healthRatio), 8, -1);
             instance.fontRenderer.drawString(hp, x, hpheight, Color.WHITE.getRGB());
 
         }
-
 
 
     }
@@ -244,23 +224,23 @@ public class OverlayHandler extends GuiUtils {
         MainWindow scaledresolution = instance.mainWindow;
 
 
-        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
-        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
 
-        int offset = playerData.getChampion().getResource()==NONE ? 10 : 20;
+        int offset = playerData.getChampion().getResource() == NONE ? 10 : 20;
 
-        int height = scaledresolution.getScaledHeight()-offset;
-        int width = (scaledresolution.getScaledWidth()/2)-50;
+        int height = scaledresolution.getScaledHeight() - offset;
+        int width = (scaledresolution.getScaledWidth() / 2) - 50;
         String hp = Math.round(entityData.getHealth()) + "/" + Math.round(entityData.getMaxHealth().getValue());
 
 
-        int hpwidth =(scaledresolution.getScaledWidth()/2);
-        int hpheight = height+1;
-        int x =  (hpwidth - instance.fontRenderer.getStringWidth(hp) / 2);
+        int hpwidth = (scaledresolution.getScaledWidth() / 2);
+        int hpheight = height + 1;
+        int x = (hpwidth - instance.fontRenderer.getStringWidth(hp) / 2);
 
         instance.textureManager.bindTexture(hpbar);
-        double healthRatio = (((entityData.getHealth() )  /entityData.getMaxHealth().getValue()));
+        double healthRatio = (((entityData.getHealth()) / entityData.getMaxHealth().getValue()));
         drawTexturedModalRect(width, height, 0, 0, 100, 10, -1);
         drawTexturedModalRect(width + 1, height + 1, 1, 11, (int) (98 * healthRatio), 8, 0);
 
@@ -272,87 +252,146 @@ public class OverlayHandler extends GuiUtils {
     public void renderAbilities(RenderGameOverlayEvent event) {
 
 
-
         MainWindow scaledresolution = instance.mainWindow;
 
 
-        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
-        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+        IEntityData entityData = instance.player.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+        IPlayerData playerData = instance.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
-        int yoffset = playerData.getChampion().getResource()==NONE ? 10 : 20;
+        int yoffset = playerData.getChampion().getResource() == NONE ? 10 : 20;
 
-        int y = scaledresolution.getScaledHeight()-(yoffset+36);
-        int x = (scaledresolution.getScaledWidth()/2);
+        int y = scaledresolution.getScaledHeight() - (yoffset + 36);
+        int x = (scaledresolution.getScaledWidth() / 2);
 
-        x =  (x - 86 / 2);
+        x = (x - 86 / 2);
         instance.textureManager.bindTexture(mobahud);
 
-        for (int i =0; i <4;i++) {
+        for (int i = 0; i < 4; i++) {
+            ItemStack ability = playerData.getAbilities().get(2 + i);
 
             //Ability Displays
-            drawTexturedModalRect(x+(22*i), y, 2, 2, 20, 20, -3);
+            drawTexturedModalRect(x + (22 * i), y, 2 + (ability.getTag().getInt(MODE)), 2, 20, 20, -3);
 
-            int rankposx=x+(22*i) +3;
-            int rankposy = y+22;
+            if (ability.getTag().getBoolean(CAN_RANK_UP)) {
 
-            for (int g = 0; g <5;g++) {
+                drawTexturedModalRect(x + (22 * i), y, 68, 2, 20, 20, -2);
 
-                //Ability Ranking
-                drawTexturedModalRect(rankposx+(3*g),rankposy,5,23,2,2,-2);
+            }
 
+
+            GlStateManager.enableRescaleNormal();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            RenderHelper.enableGUIStandardItemLighting();
+
+            if (playerData.getAbilities().size() > 2) {
+                renderHotbarItem(x + 2 + (22 * i), y + 2, event.getPartialTicks(), instance.player, playerData.getAbilities().get(2 + i));
+            }
+
+            //Information
+            float z = 51;
+
+            //DISPLAYDATA 1
+            if (ability.getTag().getCompound(DISPLAYDATA).getBoolean(DISPLAY_DATA_1_ACTIVE)) {
+                float ratio = ability.getTag().getCompound(DISPLAYDATA).getFloat(DISPLAY_DATA_1) / ability.getTag().getCompound(DISPLAYDATA).getFloat(DISPLAY_DATA_1_MAX);
+
+                int ypos = y + 2;
+
+
+                drawTexturedModalRect(x + 2 + (22 * i), ypos + 15, 4, 46, (int) (16 * ratio), 2, 52);
+
+            }
+
+            if (ability.getTag().getCompound(DISPLAYDATA).getBoolean(DISPLAY_DATA_2_ACTIVE)) {
+                float ratio = ability.getTag().getCompound(DISPLAYDATA).getFloat(DISPLAY_DATA_2) / ability.getTag().getCompound(DISPLAYDATA).getFloat(DISPLAY_DATA_2_MAX);
+
+                int ypos = y + 2;
+
+
+                drawTexturedModalRect(x + 2 + (22 * i), (int) ((ypos + 16) - (16 * ratio)), 4, 29, 16, (int) (16 * ratio), 51);
+
+            }
+
+
+            RenderHelper.disableStandardItemLighting();
+            GlStateManager.disableRescaleNormal();
+            GlStateManager.disableBlend();
+            instance.textureManager.bindTexture(mobahud);
+
+            int rankposx = x + (22 * i) + 3;
+            int rankposy = y + 22;
+
+            for (int g = 0; g < 5; g++) {
+
+
+                drawTexturedModalRect(rankposx + (3 * g), rankposy, 5, playerData.getAbilities().get(2 + i).getTag().getInt(RANK) >= g - 1 && playerData.getAbilities().get(2 + i).getTag().getInt(RANK) != 0 ? 26 : 23, 2, 2, -2);
 
 
             }
             //Keybinding Reminder
-            drawTexturedModalRect(rankposx+3,rankposy+3,30,29,8,8,-1);
+            drawTexturedModalRect(rankposx + 3, rankposy + 3, 30, 29, 8, 8, -1);
             KeyBinding binding = KeyBindings.abilitybindings[i];
             String text = "";
-            if (binding.getKey().getKeyCode()==-1) {
-                text="UKN";
-            }
-            else if  (binding.getKey().getKeyCode()==0) {
+            if (binding.getKey().getKeyCode() == -1) {
+                text = "UKN";
+            } else if (binding.getKey().getKeyCode() == 0) {
 
-                text="LMB";
+                text = "LMB";
 
-            }
-            else if  (binding.getKey().getKeyCode()==1) {
+            } else if (binding.getKey().getKeyCode() == 1) {
 
-                text="RMB";
+                text = "RMB";
 
-            }
-            else if  (binding.getKey().getKeyCode()==2) {
+            } else if (binding.getKey().getKeyCode() == 2) {
 
-                text="MMB";
+                text = "MMB";
 
             } else {
 
-                text=binding.getLocalizedName().toUpperCase();
+                text = binding.getLocalizedName().toUpperCase();
             }
 
-            int stringx =  ((rankposx+8) - instance.fontRenderer.getStringWidth(text) / 2);
-            instance.fontRenderer.drawString(text, stringx, rankposy+4, Color.WHITE.getRGB());
-
-
-
+            int stringx = ((rankposx + 11) - instance.fontRenderer.getStringWidth(text) / 2);
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(0.9f, 0.9f, 0.9f);
+            instance.fontRenderer.drawString(text, (stringx * 1.1f), ((rankposy + 4) * 1.1f) + 3, Color.WHITE.getRGB());
+            GlStateManager.popMatrix();
+            instance.textureManager.bindTexture(mobahud);
 
 
         }
 
 
-
     }
 
 
+    private void renderHotbarItem(int x, int y, float partialTicks, PlayerEntity player, ItemStack stack) {
+        ItemRenderer itemRenderer = instance.getItemRenderer();
 
+        if (!stack.isEmpty()) {
+            float f = (float) stack.getAnimationsToGo() - partialTicks;
+            if (f > 0.0F) {
+                GlStateManager.pushMatrix();
+                float f1 = 1.0F + f / 5.0F;
+                GlStateManager.translatef((float) (x + 8), (float) (y + 12), 0.0F);
+                GlStateManager.scalef(1.0F / f1, (f1 + 1.0F) / 2.0F, 1.0F);
+                GlStateManager.translatef((float) (-(x + 8)), (float) (-(y + 12)), 0.0F);
+            }
+
+            itemRenderer.renderItemAndEffectIntoGUI(player, stack, x, y);
+            if (f > 0.0F) {
+                GlStateManager.popMatrix();
+            }
+
+
+        }
+    }
 
 
     public void renderChampionData(RenderGameOverlayEvent event) {
 
 
     }
-
-
-
 
 
 }

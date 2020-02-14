@@ -26,7 +26,7 @@ public final class PacketRegistration {
 
     public static void register() {
         registerMessage(PlayerDataMessage.class, PlayerDataMessage::encode, PlayerDataMessage::decode, PlayerDataMessage.Handler::handle);
-        registerMessage(EntityDataMessage.class, EntityDataMessage::encode,EntityDataMessage::decode,EntityDataMessage.Handler::handle);
+        registerMessage(EntityDataMessage.class, EntityDataMessage::encode, EntityDataMessage::decode, EntityDataMessage.Handler::handle);
     }
 
     private static <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,

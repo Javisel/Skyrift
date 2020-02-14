@@ -1,24 +1,22 @@
 package com.javisel.skyrift.common.capabilities;
 
 import com.javisel.skyrift.common.champion.attribute.SkyriftAttributeMap;
-import com.javisel.skyrift.main.SkyriftAttributes;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.*;
+import net.minecraft.entity.ai.attributes.AttributeMap;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 
 import java.util.ArrayList;
 
 import static com.javisel.skyrift.main.SkyriftAttributes.*;
 
-public class EntityData implements IEntityData{
+public class EntityData implements IEntityData {
 
     AttributeMap skyriftAttributes = new SkyriftAttributeMap();
-    float RESOURCE_AMOUNT=0;
+    float RESOURCE_AMOUNT = 0;
     boolean isRanged = false;
-    float health=0;
+    float health = 0;
     float gold = 0;
-
 
 
     @Override
@@ -26,10 +24,10 @@ public class EntityData implements IEntityData{
     public void loadNBT(CompoundNBT nbt) {
 
         skyriftAttributes = new SkyriftAttributeMap();
-        SharedMonsterAttributes.readAttributes(skyriftAttributes,  nbt.getList("attributemap",10));
+        SharedMonsterAttributes.readAttributes(skyriftAttributes, nbt.getList("attributemap", 10));
 
-        isRanged=nbt.getBoolean("isranged");
-        health=nbt.getFloat("health");
+        isRanged = nbt.getBoolean("isranged");
+        health = nbt.getFloat("health");
 
 
     }
@@ -37,29 +35,29 @@ public class EntityData implements IEntityData{
     @Override
     public void addHealth(float amount) {
 
-        if (health+amount>getMaxHealth().getValue()) {
-            amount= (float) (getMaxHealth().getValue()-health);
+        if (health + amount > getMaxHealth().getValue()) {
+            amount = (float) (getMaxHealth().getValue() - health);
 
 
         }
 
-        health+=amount;
-        if (health<0) {
-            health=0;
+        health += amount;
+        if (health < 0) {
+            health = 0;
         }
 
 
-    }
-
-    @Override
-    public void setGold(int amount) {
-
-        gold=amount;
     }
 
     @Override
     public float getGold() {
         return gold;
+    }
+
+    @Override
+    public void setGold(int amount) {
+
+        gold = amount;
     }
 
     @Override
@@ -69,26 +67,24 @@ public class EntityData implements IEntityData{
 
     @Override
     public AttributeMap getAttributeMap() {
-        return  skyriftAttributes;
+        return skyriftAttributes;
     }
 
     @Override
-    public CompoundNBT writeNBT(){
+    public CompoundNBT writeNBT() {
 
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putFloat("resourceamount",getResourceAmount());
-        nbt.put("attributemap",SharedMonsterAttributes.writeAttributes(skyriftAttributes));
-        nbt.putBoolean("isranged",isRanged);
-        nbt.putFloat("health",health);
-        return  nbt;
+        nbt.putFloat("resourceamount", getResourceAmount());
+        nbt.put("attributemap", SharedMonsterAttributes.writeAttributes(skyriftAttributes));
+        nbt.putBoolean("isranged", isRanged);
+        nbt.putFloat("health", health);
+        return nbt;
     }
-
-
 
 
     @Override
     public IAttributeInstance getPhysicalPower() {
-                 return skyriftAttributes.getAttributeInstance(PHYSICAL_POWER);
+        return skyriftAttributes.getAttributeInstance(PHYSICAL_POWER);
 
     }
 
@@ -106,13 +102,13 @@ public class EntityData implements IEntityData{
 
     @Override
     public IAttributeInstance getCritDamage() {
-                 return skyriftAttributes.getAttributeInstance(CRITDAMAGE);
+        return skyriftAttributes.getAttributeInstance(CRITDAMAGE);
 
     }
 
     @Override
     public void setIsRanged(Boolean isRanged) {
-        this.isRanged=isRanged;
+        this.isRanged = isRanged;
     }
 
     @Override
@@ -152,11 +148,11 @@ public class EntityData implements IEntityData{
     }
 
     @Override
-    public void setHealth(float amount){
+    public void setHealth(float amount) {
 
-        this.health=amount;
-        if (health>this.getMaxHealth().getValue()) {
-            health= (float) this.getMaxHealth().getValue();
+        this.health = amount;
+        if (health > this.getMaxHealth().getValue()) {
+            health = (float) this.getMaxHealth().getValue();
         }
     }
 
@@ -192,8 +188,13 @@ public class EntityData implements IEntityData{
     }
 
     @Override
+    public void setResourceAmount(double amount) {
+        RESOURCE_AMOUNT = (float) amount;
+    }
+
+    @Override
     public void addResourceAmount(float amount) {
-        RESOURCE_AMOUNT+=amount;
+        RESOURCE_AMOUNT += amount;
     }
 
     @Override
@@ -210,7 +211,7 @@ public class EntityData implements IEntityData{
     public IAttributeInstance getExperience() {
 
 
-        if (skyriftAttributes.getAttributeInstance(EXPERIENCE)==null) {
+        if (skyriftAttributes.getAttributeInstance(EXPERIENCE) == null) {
             System.err.println("There is no attribute with said instance");
             skyriftAttributes.registerAttribute(EXPERIENCE);
             return null;
@@ -231,24 +232,20 @@ public class EntityData implements IEntityData{
         return skyriftAttributes.getAttributeInstance(RANGE);
     }
 
-
     @Override
     public ArrayList<IAttributeInstance> corestats() {
 
-        ArrayList<IAttributeInstance> corestats =new ArrayList<>();
+        ArrayList<IAttributeInstance> corestats = new ArrayList<>();
 
         corestats.add(skyriftAttributes.getAttributeInstance(PHYSICAL_POWER));
         corestats.add(skyriftAttributes.getAttributeInstance(MAGICAL_POWER));
         corestats.add(skyriftAttributes.getAttributeInstance(ARMOR));
         corestats.add(skyriftAttributes.getAttributeInstance(MAGIC_RESIST));
 
-        return  corestats;
-
+        return corestats;
 
 
     }
-
-
 
     @Override
     public boolean isRanged() {
@@ -257,13 +254,8 @@ public class EntityData implements IEntityData{
 
     public void resetData() {
         skyriftAttributes = new SkyriftAttributeMap();
-        RESOURCE_AMOUNT=0;
-        isRanged=false;
+        RESOURCE_AMOUNT = 0;
+        isRanged = false;
 
-    }
-
-    @Override
-    public void setResourceAmount(double amount) {
-        RESOURCE_AMOUNT= (float) amount;
     }
 }

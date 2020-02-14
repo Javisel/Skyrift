@@ -2,13 +2,9 @@ package com.javisel.skyrift.common.capabilities;
 
 import com.javisel.skyrift.common.champion.Champion;
 import com.javisel.skyrift.common.champion.ChampionDatabase;
-import com.javisel.skyrift.common.champion.ability.AbstractAbility;
-import com.javisel.skyrift.common.items.SkyRiftItem;
-import com.javisel.skyrift.main.SkyRift;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.IParticleData;
 
 import java.util.ArrayList;
 
@@ -19,12 +15,12 @@ public class PlayerData implements IPlayerData {
     CompoundNBT championData = new CompoundNBT();
     ArrayList<ItemStack> abilities = new ArrayList<>();
     ArrayList<ItemStack> items = new ArrayList<>();
+    int level = 0;
+
     @Override
     public CompoundNBT getChampionData() {
         return championData;
     }
-
-    int level =0;
 
     @Override
     public Champion getChampion() {
@@ -38,16 +34,13 @@ public class PlayerData implements IPlayerData {
 
     @Override
     public void setChampion(Champion champion) {
-        this.champion=champion;
+        this.champion = champion;
     }
 
     @Override
     public void setisChampion() {
 
-        if  (isChampion) isChampion=false;
-        else {
-            isChampion=true;
-        }
+        isChampion = !isChampion;
     }
 
     @Override
@@ -57,7 +50,7 @@ public class PlayerData implements IPlayerData {
 
     @Override
     public void setLevel(int levelIn) {
-        level=levelIn;
+        level = levelIn;
     }
 
     @Override
@@ -65,10 +58,21 @@ public class PlayerData implements IPlayerData {
 
         CompoundNBT compoundNBT = new CompoundNBT();
 
-        compoundNBT.putBoolean("ischampion",isChampion);
-        compoundNBT.putInt("level",level);
-        if (champion!=null) {
+        compoundNBT.putBoolean("ischampion", isChampion);
+        compoundNBT.putInt("level", level);
+
+
+        if (champion != null) {
             compoundNBT.putUniqueId("championid", champion.getId());
+            CompoundNBT abilities = new CompoundNBT();
+
+            for (int i = 0; i < this.abilities.size(); i++) {
+
+                abilities.put("kit_part_" + i, this.abilities.get(i).write(new CompoundNBT()));
+
+
+            }
+            compoundNBT.put("kit", abilities);
 
         }
         return compoundNBT;
@@ -77,23 +81,41 @@ public class PlayerData implements IPlayerData {
     @Override
     public void loadNBT(CompoundNBT nbt) {
 
-        isChampion=nbt.getBoolean("ischampion");
+        isChampion = nbt.getBoolean("ischampion");
 
         if (nbt.hasUniqueId("championid")) {
 
             champion = ChampionDatabase.championHashMap.get(nbt.getUniqueId("championid"));
         }
-        level=nbt.getInt("level");
+        level = nbt.getInt("level");
+
+        CompoundNBT kit = nbt.getCompound("kit");
+        boolean cancont = true;
+        int i = 0;
+        while (cancont) {
+
+            if (kit.contains("kit_part_" + i)) {
+
+                abilities.add(ItemStack.read(kit.getCompound("kit_part_" + i)));
+                i++;
+
+
+            } else {
+                cancont = false;
+            }
+
+
+        }
+
 
     }
 
     public void resetData() {
-        isChampion=false;
+        isChampion = false;
 
-        champion=null;
-        championData=new CompoundNBT();
-        level=0;
-
+        champion = null;
+        championData = new CompoundNBT();
+        level = 0;
 
 
     }
