@@ -7,6 +7,7 @@ import com.javisel.skyrift.common.capabilities.PlayerDataProvider;
 import com.javisel.skyrift.main.SkyRift;
 import com.javisel.skyrift.main.SkyriftUtilities;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -22,6 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 
 import java.awt.*;
@@ -50,6 +52,7 @@ public class OverlayHandler extends GuiUtils {
             if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
                 event.setCanceled(true);
                 renderXPBar(event);
+
             } else if (event.getType() == RenderGameOverlayEvent.ElementType.FOOD) {
                 event.setCanceled(true);
                 renderResourceBar(event);
@@ -57,24 +60,27 @@ public class OverlayHandler extends GuiUtils {
             } else if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH) {
                 event.setCanceled(true);
                 renderHealthBar(event);
+                renderStatBar(event);
 
 
             } else if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
                 event.setCanceled(true);
                 renderAbilities(event);
+                renderItemSet(event);
+
 
             } else if (event.getType() == RenderGameOverlayEvent.ElementType.AIR) {
                 event.setCanceled(true);
+
             } else if (event.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
                 event.setCanceled(true);
 
             } else if (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
                 event.setCanceled(true);
             }
-            renderStatBar(event);
-            renderItemSet(event);
 
         }
+        //instance.fontRenderer.drawString("SKYRIFT INDEV",0,0,Color.WHITE.getRGB());
 
     }
 
@@ -90,11 +96,12 @@ public class OverlayHandler extends GuiUtils {
         int height = scaledresolution.getScaledHeight() - 7;
 
         instance.textureManager.bindTexture(mobahud);
+        drawTexturedModalRect(width, height, 45, 162, 62, 7, 50);
 
         for (int y = 1; y < 3; y++) {
 
             for (int x = 0; x < 3; x++) {
-                drawTexturedModalRect(width + (17 * x), height - (17 * y), 45, 144, 18, 18, -2);
+                drawTexturedModalRect(width + (17 * x), height - (17 * y), 45, 144, 18, 18, 50);
 
             }
 
@@ -102,9 +109,10 @@ public class OverlayHandler extends GuiUtils {
 
         String gold = Float.toString(entityData.getGold());
 
-        drawTexturedModalRect(width, height, 45, 162, 62, 7, -2);
+
 
     }
+
 
     public void renderStatBar(RenderGameOverlayEvent event) {
 
@@ -118,10 +126,12 @@ public class OverlayHandler extends GuiUtils {
         int height = scaledresolution.getScaledHeight() - 78;
 
         instance.textureManager.bindTexture(mobahud);
-        drawTexturedModalRect(width, height, 1, 91, 40, 78, -2);
+        drawTexturedModalRect(width, height, 1, 91, 40, 78, 0);
 
         int stringx = width + 26;
         int stringy = height + 2;
+
+
 
 
         ArrayList<String> displaystat = new ArrayList<>();
@@ -139,6 +149,7 @@ public class OverlayHandler extends GuiUtils {
         displaystat.add(getroundedDecimal(instance.player.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 100));
 
 
+
         for (int i = 0; i < displaystat.size(); i++) {
 
             int x = ((stringx) - instance.fontRenderer.getStringWidth(displaystat.get(i)) / 2);
@@ -150,6 +161,11 @@ public class OverlayHandler extends GuiUtils {
 
 
         }
+
+
+
+
+
 
 
     }
@@ -280,9 +296,9 @@ public class OverlayHandler extends GuiUtils {
             }
 
 
-            GlStateManager.enableRescaleNormal();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA.param, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA.param, GlStateManager.SourceFactor.ONE.param, GlStateManager.DestFactor.ZERO.param);
+            RenderSystem.enableRescaleNormal();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             RenderHelper.enableStandardItemLighting();
 
             if (playerData.getAbilities().size() > 2) {
@@ -315,8 +331,8 @@ public class OverlayHandler extends GuiUtils {
 
 
             RenderHelper.disableStandardItemLighting();
-            GlStateManager.disableRescaleNormal();
-            GlStateManager.disableBlend();
+            RenderSystem.disableRescaleNormal();
+            RenderSystem.disableBlend();
             instance.textureManager.bindTexture(mobahud);
 
             int rankposx = x + (22 * i) + 3;
@@ -352,11 +368,12 @@ public class OverlayHandler extends GuiUtils {
                 text = binding.getLocalizedName().toUpperCase();
             }
 
-            int stringx = ((rankposx + 11) - instance.fontRenderer.getStringWidth(text) / 2);
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.9f, 0.9f, 0.9f);
-            instance.fontRenderer.drawString(text, (stringx * 1.1f), ((rankposy + 4) * 1.1f) + 3, Color.WHITE.getRGB());
-            GlStateManager.popMatrix();
+            float stringx = ((rankposx + 11) - instance.fontRenderer.getStringWidth(text) / 2) *1.1f;
+            float stringy = ((rankposy + 4) * 1.1f) + 3;
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(0.9f, 0.9f, 1f);
+            instance.fontRenderer.drawString(text, stringx, stringy, Color.WHITE.getRGB());
+            RenderSystem.popMatrix();
             instance.textureManager.bindTexture(mobahud);
 
 
@@ -367,27 +384,23 @@ public class OverlayHandler extends GuiUtils {
 
 
     private void renderHotbarItem(int x, int y, float partialTicks, PlayerEntity player, ItemStack stack) {
-        ItemRenderer itemRenderer = instance.getItemRenderer();
-
         if (!stack.isEmpty()) {
-            float f = (float) stack.getAnimationsToGo() - partialTicks;
+            float f = (float)stack.getAnimationsToGo() - partialTicks;
             if (f > 0.0F) {
-                GlStateManager.pushMatrix();
+                RenderSystem.pushMatrix();
                 float f1 = 1.0F + f / 5.0F;
-                GlStateManager.translatef((float) (x + 8), (float) (y + 12), 0.0F);
-                GlStateManager.scalef(1.0F / f1, (f1 + 1.0F) / 2.0F, 1.0F);
-                GlStateManager.translatef((float) (-(x + 8)), (float) (-(y + 12)), 0.0F);
+                RenderSystem.translatef((float)(x + 8), (float)(y + 12), 0.0F);
+                RenderSystem.scalef(1.0F / f1, (f1 + 1.0F) / 2.0F, 1.0F);
+                RenderSystem.translatef((float)(-(x + 8)), (float)(-(y + 12)), 0.0F);
             }
 
-            itemRenderer.renderItemAndEffectIntoGUI(player, stack, x, y);
+            this.instance.getItemRenderer().renderItemAndEffectIntoGUI(player, stack, x, y);
             if (f > 0.0F) {
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
             }
-
 
         }
     }
-
 
     public void renderChampionData(RenderGameOverlayEvent event) {
 

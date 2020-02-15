@@ -1,14 +1,13 @@
 package com.javisel.skyrift.main;
 
-import com.javisel.skyrift.common.capabilities.EntityData;
-import com.javisel.skyrift.common.capabilities.EntityDataProvider;
-import com.javisel.skyrift.common.capabilities.PlayerDataProvider;
+import com.javisel.skyrift.common.capabilities.*;
 import com.javisel.skyrift.common.damagesource.EnumDamageType;
 import com.javisel.skyrift.common.damagesource.SkyRiftDamageSource;
 import com.javisel.skyrift.common.entity.BypassDamage;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -22,6 +21,10 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.DEDICATED_SERVER)
 
 public class EventHandler {
+
+
+
+
 
 
     @SubscribeEvent
@@ -48,9 +51,21 @@ public class EventHandler {
 
 
     @SubscribeEvent
-    public void livingHungerEvent(TickEvent.PlayerTickEvent e) {
+    public void playerTick(TickEvent.PlayerTickEvent e) {
 
         e.player.getFoodStats().setFoodLevel(0);
+
+        IPlayerData playerData = e.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+
+        if (e.player.getHeldItemMainhand()!= playerData.getAbilities().get(1)) {
+
+            e.player.inventory.clear();
+            e.player.setHeldItem(Hand.MAIN_HAND,playerData.getAbilities().get(1));
+
+        }
+
+
+
 
     }
 
@@ -61,6 +76,7 @@ public class EventHandler {
         if (!e.getPlayer().getEntityWorld().isRemote) {
 
             SkyriftUtilities.sync(e.getPlayer());
+
 
         }
 

@@ -5,11 +5,14 @@ import com.electronwill.nightconfig.core.file.FileNotFoundAction;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +46,18 @@ public class ChampionConfig {
         configureChampion();
 
 
+
+        Path path = FMLPaths.CONFIGDIR.get().resolve("skyrift/champions/" + name + "/");
+
+        if (Files.notExists(path)) {
+
+            new File(path.toString()).mkdirs();
+
+        }
+
         ChampionConfig.loadConfig(config, FMLPaths.CONFIGDIR.get().resolve("skyrift/champions/" + name + "/" + name + "_stats.toml"));
+
+
 
 
     }
@@ -51,11 +65,7 @@ public class ChampionConfig {
     public static void loadConfig(ForgeConfigSpec spec, Path path) {
         CommentedFileConfig configData;
 
-             configData = CommentedFileConfig.builder(path)
-                    .sync()
-                    .autosave()
-                    .writingMode(WritingMode.REPLACE)
-                    .build();
+       configData = CommentedFileConfig.builder(path).sync().autosave().writingMode(WritingMode.REPLACE).build();
 
 
 

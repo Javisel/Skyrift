@@ -74,6 +74,21 @@ public abstract class AbstractAbility extends Item {
 
     }
 
+    /**
+     * Determine if the player switching between these two item stacks
+     *
+     * @param oldStack    The old stack that was equipped
+     * @param newStack    The new stack
+     * @param slotChanged If the current equipped slot was changed, Vanilla does not
+     *                    play the animation if you switch between two slots that
+     *                    hold the exact same item.
+     * @return True to play the item change animation
+     */
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return false;
+    }
+
     public float getCost(PlayerEntity playerEntity, ItemStack stack) {
 
 

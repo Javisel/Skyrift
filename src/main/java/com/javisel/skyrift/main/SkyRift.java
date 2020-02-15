@@ -3,6 +3,7 @@ package com.javisel.skyrift.main;
 import com.javisel.skyrift.client.KeyBindings;
 import com.javisel.skyrift.client.OverlayHandler;
 import com.javisel.skyrift.common.capabilities.*;
+import com.javisel.skyrift.common.champion.ChampionDatabase;
 import com.javisel.skyrift.common.registration.CapabilityRegistration;
 import com.javisel.skyrift.common.registration.PacketRegistration;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -12,7 +13,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
@@ -41,7 +44,6 @@ public class SkyRift {
     public static final String DISPLAYDATA = "displaydata";
 
     public static final String MODID = "skyrift";
-    private static final IAttribute[] ATTRIBUTES = new IAttribute[]{MAX_HEALTH, FOLLOW_RANGE, KNOCKBACK_RESISTANCE, MOVEMENT_SPEED, FLYING_SPEED, ATTACK_DAMAGE, ATTACK_SPEED, ARMOR, ARMOR_TOUGHNESS, LUCK};
     public static ItemGroup skyriftgroup = new SkyriftItemGroup();
 
     public SkyRift() {
@@ -53,8 +55,6 @@ public class SkyRift {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         // Register the doClientStuff method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-
-        // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new EventHandler());
         MinecraftForge.EVENT_BUS.register(new CapabilityRegistration());
@@ -74,6 +74,7 @@ public class SkyRift {
         CapabilityManager.INSTANCE.register(IEntityData.class, new EntityDataStorage(), EntityData::new);
         CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayerDataStorage(), PlayerData::new);
         PacketRegistration.register();
+
 
     }
 

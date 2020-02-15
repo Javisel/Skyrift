@@ -80,7 +80,7 @@ public class PyroConfig extends ChampionConfig {
         builder.pop();
 
 
-        /*
+
         builder.push("Passive Stats");
 
 
@@ -120,7 +120,7 @@ public class PyroConfig extends ChampionConfig {
 
 
 
-*/
+
 
 
 
