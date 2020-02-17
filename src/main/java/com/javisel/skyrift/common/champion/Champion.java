@@ -1,15 +1,17 @@
 package com.javisel.skyrift.common.champion;
 
-import com.javisel.skyrift.common.capabilities.EntityDataProvider;
-import com.javisel.skyrift.common.capabilities.IEntityData;
-import com.javisel.skyrift.common.capabilities.IPlayerData;
-import com.javisel.skyrift.common.capabilities.PlayerDataProvider;
+import com.javisel.skyrift.common.capabilities.entitydata.EntityDataProvider;
+import com.javisel.skyrift.common.capabilities.entitydata.IEntityData;
+import com.javisel.skyrift.common.capabilities.entitydata.IPlayerData;
+import com.javisel.skyrift.common.capabilities.entitydata.PlayerDataProvider;
 import com.javisel.skyrift.common.champion.ability.AbstractAbility;
 import com.javisel.skyrift.common.champion.resource.Resource;
+import com.javisel.skyrift.common.damagesource.EnumDamageType;
 import com.javisel.skyrift.common.damagesource.SkyRiftDamageSource;
 import com.javisel.skyrift.main.SkyriftUtilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,16 +20,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
+import static com.javisel.skyrift.main.SkyRift.TICKCOUNT;
+
 public abstract class Champion {
 
     private final String name;
     private final ChampionConfig basedata;
     private final Resource resource;
     private final UUID id;
+    private final EnumDamageType basicAttackType;
     private ArrayList<AbstractAbility> kit = new ArrayList<>();
 
-    public Champion(ChampionConfig config, UUID id, Resource resource, AbstractAbility... kit) {
+    public Champion(ChampionConfig config, UUID id, Resource resource, EnumDamageType basicAttackType, AbstractAbility... kit) {
         basedata = config;
+        this.basicAttackType = basicAttackType;
 
         this.kit.addAll(Arrays.asList(kit));
         name = basedata.getName();
@@ -66,16 +72,17 @@ public abstract class Champion {
 
     public void tick(PlayerEntity playerEntity) {
 
+
         IPlayerData playerData = playerEntity.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
         IEntityData entityData = playerEntity.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
 
-        if (playerData.getChampionData().getInt("tickcount") < 20) {
-            playerData.getChampionData().putInt("tickcount", playerData.getChampionData().getInt("tickcount") + 1);
+        if (playerData.getChampionData().getInt(TICKCOUNT) < 20) {
+            playerData.getChampionData().putInt(TICKCOUNT, playerData.getChampionData().getInt(TICKCOUNT) + 1);
 
 
         } else {
-            playerData.getChampionData().putInt("tickcount", 0);
+            playerData.getChampionData().putInt(TICKCOUNT, 0);
             SkyriftUtilities.heal(playerEntity, playerEntity, (float) entityData.getHealthRegen().getValue());
             SkyriftUtilities.addResource(playerEntity, playerEntity, (float) entityData.getResourceRegen().getValue());
             //TODO HEALING
@@ -101,8 +108,7 @@ public abstract class Champion {
             return;
         }
 
-        IPlayerData playerData = playerEntity.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
-        IEntityData entityData = playerEntity.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+        IPlayerData playerData = SkyriftUtilities.getPlayerData(playerEntity);
 
 
         for (int i = 0; i < getKit().size(); i++) {
@@ -115,6 +121,13 @@ public abstract class Champion {
         for (int i = 0; i < playerData.getAbilities().size(); i++) {
 
             ((AbstractAbility) playerData.getAbilities().get(i).getItem()).setData(playerEntity, playerData.getAbilities().get(i));
+
+
+
+
+
+
+
 
 
         }
@@ -156,4 +169,9 @@ public abstract class Champion {
     }
 
 
+    public EnumDamageType getbasicAttackDamageType() {
+
+
+        return basicAttackType;
+    }
 }

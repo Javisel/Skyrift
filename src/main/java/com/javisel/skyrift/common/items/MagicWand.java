@@ -1,9 +1,9 @@
 package com.javisel.skyrift.common.items;
 
-import com.javisel.skyrift.common.capabilities.EntityDataProvider;
-import com.javisel.skyrift.common.capabilities.IEntityData;
-import com.javisel.skyrift.common.capabilities.IPlayerData;
-import com.javisel.skyrift.common.capabilities.PlayerDataProvider;
+import com.javisel.skyrift.common.capabilities.entitydata.EntityDataProvider;
+import com.javisel.skyrift.common.capabilities.entitydata.IEntityData;
+import com.javisel.skyrift.common.capabilities.entitydata.IPlayerData;
+import com.javisel.skyrift.common.capabilities.entitydata.PlayerDataProvider;
 import com.javisel.skyrift.common.network.EntityDataMessage;
 import com.javisel.skyrift.common.network.PlayerDataMessage;
 import com.javisel.skyrift.common.registration.PacketRegistration;

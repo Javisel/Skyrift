@@ -1,42 +1,32 @@
 package com.javisel.skyrift.common.champion.champions.pyro.kit;
 
-import com.javisel.skyrift.common.champion.ability.EnumAbilityTags;
-import com.javisel.skyrift.common.champion.ability.basicattack.BasicAttack;
+import com.javisel.skyrift.common.champion.ability.basicattack.MeleeBasicAttack;
 import com.javisel.skyrift.common.registration.ItemProperties;
-import net.minecraft.entity.Entity;
+import com.javisel.skyrift.main.SkyriftUtilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 
-import static com.javisel.skyrift.main.SkyRift.SWINGAMOUNT;
-
-public class PyroBasicAttack extends BasicAttack {
+public class PyroBasicAttack extends MeleeBasicAttack {
     public PyroBasicAttack() {
-        super("pyro_basic_attack", ItemProperties.MELEE_BASIC_ATTACK_PROPERTIES, EnumAbilityTags.BASICATTACK);
+        super("pyro_basic_attack", ItemProperties.MELEE_BASIC_ATTACK_PROPERTIES);
     }
+
 
     /**
-     * Called when the player Left Clicks (attacks) an entity. Processed before
-     * damage is done, if return value is true further processing is canceled and
-     * the entity is not attacked.
+     * Called to trigger the item's "innate" right click behavior. To handle when this item is used on a Block, see
+     * {@link #onItemUse}.
      *
-     * @param stack  The Item being used
-     * @param player The player that is attacking
-     * @param entity The entity being attacked
-     * @return True to cancel the rest of the interaction.
+     * @param worldIn
+     * @param playerIn
+     * @param handIn
      */
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        SkyriftUtilities.getEntityData(playerIn).setHealth(50);
 
-        if (super.isCastable(player, stack)) {
-
-            stack.getTag().putFloat(SWINGAMOUNT, player.getCooledAttackStrength(0));
-
-
-        }
-
-
-        return false;
+        return super.onItemRightClick(worldIn, playerIn, handIn);
     }
-
-
 }

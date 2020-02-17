@@ -1,21 +1,21 @@
 package com.javisel.skyrift.main;
 
+import com.javisel.skyrift.client.ClientEventHandler;
 import com.javisel.skyrift.client.KeyBindings;
 import com.javisel.skyrift.client.OverlayHandler;
-import com.javisel.skyrift.common.capabilities.*;
-import com.javisel.skyrift.common.champion.ChampionDatabase;
+import com.javisel.skyrift.common.capabilities.devicedata.DeviceData;
+import com.javisel.skyrift.common.capabilities.devicedata.DeviceDataStorage;
+import com.javisel.skyrift.common.capabilities.devicedata.IDeviceData;
+import com.javisel.skyrift.common.capabilities.entitydata.*;
 import com.javisel.skyrift.common.registration.CapabilityRegistration;
 import com.javisel.skyrift.common.registration.PacketRegistration;
-import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
@@ -26,8 +26,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.stream.Collectors;
-
-import static net.minecraft.entity.SharedMonsterAttributes.*;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("skyrift")
@@ -41,8 +39,8 @@ public class SkyRift {
     public static final String SWINGAMOUNT = "swingamount";
     public static final String BASIC_ATTACK_SCALING = "bas";
     public static final String BASE_VALUE = "basevalue";
-    public static final String DISPLAYDATA = "displaydata";
-
+    public static final String GENERALDATA = "displaydata";
+    public static final String TICKCOUNT = "tickcount";
     public static final String MODID = "skyrift";
     public static ItemGroup skyriftgroup = new SkyriftItemGroup();
 
@@ -73,6 +71,8 @@ public class SkyRift {
         // some preinit code
         CapabilityManager.INSTANCE.register(IEntityData.class, new EntityDataStorage(), EntityData::new);
         CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayerDataStorage(), PlayerData::new);
+        CapabilityManager.INSTANCE.register(IDeviceData.class, new DeviceDataStorage(), DeviceData::new);
+
         PacketRegistration.register();
 
 
@@ -80,6 +80,8 @@ public class SkyRift {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new OverlayHandler());
+        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+
         KeyBindings.registerKeys();
     }
 

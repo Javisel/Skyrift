@@ -1,16 +1,18 @@
 package com.javisel.skyrift.main;
 
-import com.javisel.skyrift.common.capabilities.*;
+import com.javisel.skyrift.common.capabilities.entitydata.EntityData;
+import com.javisel.skyrift.common.capabilities.entitydata.EntityDataProvider;
+import com.javisel.skyrift.common.capabilities.entitydata.IPlayerData;
+import com.javisel.skyrift.common.capabilities.entitydata.PlayerDataProvider;
 import com.javisel.skyrift.common.damagesource.EnumDamageType;
 import com.javisel.skyrift.common.damagesource.SkyRiftDamageSource;
 import com.javisel.skyrift.common.entity.BypassDamage;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -23,16 +25,19 @@ import net.minecraftforge.fml.common.Mod;
 public class EventHandler {
 
 
-
-
-
-
     @SubscribeEvent
     public void disableDamage(LivingAttackEvent e) {
 
-        if (!(e.getSource() instanceof SkyRiftDamageSource) && e.getSource() != DamageSource.OUT_OF_WORLD) {
+        if (!(e.getSource() instanceof SkyRiftDamageSource) && e.getSource() != DamageSource.OUT_OF_WORLD && !(e.getSource() instanceof BypassDamage)) {
 
-            e.setCanceled(true);
+
+            if (e.getSource().getTrueSource() instanceof PlayerEntity) {
+
+                e.getEntityLiving().heal(5);
+            } else {
+
+                e.setCanceled(true);
+            }
         } else {
 
             if (e.getEntityLiving() instanceof PlayerEntity) {
@@ -53,20 +58,27 @@ public class EventHandler {
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent e) {
 
-        e.player.getFoodStats().setFoodLevel(0);
 
-        IPlayerData playerData = e.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY,null).orElseThrow(NullPointerException::new);
+        IPlayerData playerData = e.player.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
 
-        if (e.player.getHeldItemMainhand()!= playerData.getAbilities().get(1)) {
+        if (!e.player.world.isRemote && e.player.isAlive()) {
 
-            e.player.inventory.clear();
-            e.player.setHeldItem(Hand.MAIN_HAND,playerData.getAbilities().get(1));
+            if (playerData.isChampion()) {
+                playerData.tick(e.player);
+                e.player.getFoodStats().setFoodLevel(0);
+
+                if ( e.player.getHeldItemMainhand().getItem() != playerData.getAbilities().get(1).getItem() && !e.player.isCreative()) {
+
+                    e.player.inventory.clear();
+                    ItemStack stack = playerData.getAbilities().get(1).copy();
+                    e.player.setHeldItem(Hand.MAIN_HAND, stack);
+
+
+                }
+                SkyriftUtilities.sync(e.player);
+            }
 
         }
-
-
-
-
     }
 
 
@@ -86,9 +98,12 @@ public class EventHandler {
     @SubscribeEvent
     public void damageEvent(LivingDamageEvent e) {
 
+        if (e.getEntityLiving() != null) {
+            e.getEntityLiving().hurtResistantTime = 0;
+
+        }
         if (e.getSource() instanceof SkyRiftDamageSource) {
 
-            e.setAmount(0);
             SkyRiftDamageSource damageSource = (SkyRiftDamageSource) e.getSource();
             EntityData victimData = (EntityData) e.getEntityLiving().getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
             EntityData attackerData = (EntityData) e.getEntityLiving().getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
@@ -101,9 +116,10 @@ public class EventHandler {
 
             }
 
+            double newdamage = e.getAmount();
             if (damageSource.damageType == EnumDamageType.TRUE) {
 
-                victimData.addHealth(damageSource.amount * -1);
+                newdamage = e.getAmount();
 
 
             } else if (damageSource.damageType == EnumDamageType.MAGIC || damageSource.damageType == EnumDamageType.PHYSICAL) {
@@ -123,22 +139,27 @@ public class EventHandler {
 
                 }
 
-                double newdamage = (e.getAmount() * 100) / ((defence * (1 - (percentPen / 100)) - flatPen));
-
-                e.setAmount(0);
-                victimData.addHealth((float) (newdamage * -1));
-
-                if (victimData.getHealth() <= 0) {
-
-                    e.getEntityLiving().setHealth(1);
-                    e.getEntityLiving().attackEntityFrom(new BypassDamage(e.getSource().getTrueSource(), damageSource), (float) newdamage);
-
-
-                }
+                newdamage = (e.getAmount() * 100) / ((defence * (1 - (percentPen / 100)) - flatPen));
 
 
             }
 
+            if (newdamage <= 0) {
+                return;
+            }
+
+
+            victimData.addHealth((float) (newdamage * -1));
+
+            e.getEntityLiving().hurtTime = e.getEntityLiving().maxHurtTime;
+
+            if (victimData.getHealth() <= 0) {
+
+                e.getEntityLiving().setHealth(1);
+                e.getEntityLiving().attackEntityFrom(new BypassDamage(e.getSource().getTrueSource(), damageSource), (float) newdamage);
+
+
+            }
 
         }
 
@@ -153,17 +174,6 @@ public class EventHandler {
             PlayerEntity playerEntity = (PlayerEntity) e.getEntityLiving();
 
             playerEntity.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new).getChampion().onDeath((SkyRiftDamageSource) e.getSource());
-
-
-        }
-
-
-    }
-
-    @SubscribeEvent
-    public void Attributes(EntityJoinWorldEvent e) {
-
-        if (e.getEntity() instanceof LivingEntity) {
 
 
         }

@@ -1,18 +1,22 @@
 package com.javisel.skyrift.main;
 
-import com.javisel.skyrift.common.capabilities.EntityDataProvider;
-import com.javisel.skyrift.common.capabilities.IEntityData;
-import com.javisel.skyrift.common.capabilities.IPlayerData;
-import com.javisel.skyrift.common.capabilities.PlayerDataProvider;
+import com.javisel.skyrift.common.capabilities.devicedata.DeviceDataProvider;
+import com.javisel.skyrift.common.capabilities.devicedata.IDeviceData;
+import com.javisel.skyrift.common.capabilities.entitydata.EntityDataProvider;
+import com.javisel.skyrift.common.capabilities.entitydata.IEntityData;
+import com.javisel.skyrift.common.capabilities.entitydata.IPlayerData;
+import com.javisel.skyrift.common.capabilities.entitydata.PlayerDataProvider;
 import com.javisel.skyrift.common.champion.Champion;
 import com.javisel.skyrift.common.network.EntityDataMessage;
 import com.javisel.skyrift.common.network.PlayerDataMessage;
 import com.javisel.skyrift.common.registration.PacketRegistration;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import javax.annotation.Nullable;
@@ -99,6 +103,24 @@ public class SkyriftUtilities {
     }
 
 
+    public static IEntityData getEntityData(Entity entity) {
+
+        return entity.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+
+    }
+
+    public static IDeviceData getDeviceData(ItemStack stack) {
+
+
+        return stack.getCapability(DeviceDataProvider.Device_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+    }
+
+    public static IPlayerData getPlayerData(PlayerEntity entity) {
+
+        return entity.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+
+    }
+
     public static void InitializeChampion(PlayerEntity playerEntity, Champion champion) {
 
         IPlayerData playerData = playerEntity.getCapability(PlayerDataProvider.Player_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
@@ -107,8 +129,8 @@ public class SkyriftUtilities {
         playerData.resetData();
         entityData.resetData();
         playerEntity.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).setBaseValue(1);
-        playerEntity.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).removeAllModifiers();
-        playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
+        playerEntity.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).func_225505_c_().clear();
+        playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).func_225505_c_().clear();
         playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.1);
         playerData.setChampion(champion);
         playerData.setisChampion();
@@ -173,18 +195,13 @@ public class SkyriftUtilities {
 
     public static void heal(LivingEntity target, @Nullable LivingEntity source, float amount) {
 
-        IEntityData entityData = target.getCapability(EntityDataProvider.Entity_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
+        IEntityData entityData = SkyriftUtilities.getEntityData(target);
 
         if (amount + entityData.getHealth() > entityData.getMaxHealth().getValue()) {
             amount = (float) (entityData.getMaxHealth().getValue() - entityData.getHealth());
         }
 
         entityData.setHealth(entityData.getHealth() + amount);
-
-        if (target instanceof PlayerEntity) {
-
-            sync((PlayerEntity) target);
-        }
 
 
     }

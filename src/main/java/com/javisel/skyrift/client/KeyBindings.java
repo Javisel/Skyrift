@@ -21,6 +21,8 @@ public class KeyBindings {
     public static final KeyBinding ITEM4 = new KeyBinding(SkyRift.MODID + ".key.item4", GLFW.GLFW_KEY_4, "Skyrift");
     public static final KeyBinding ITEM5 = new KeyBinding(SkyRift.MODID + ".key.item5", GLFW.GLFW_KEY_5, "Skyrift");
     public static final KeyBinding ITEM6 = new KeyBinding(SkyRift.MODID + ".key.item6", GLFW.GLFW_KEY_6, "Skyrift");
+    public static final KeyBinding CONSUMEABLE1 = new KeyBinding(SkyRift.MODID + ".key.consumable1", GLFW.GLFW_KEY_5, "Skyrift");
+    public static final KeyBinding CONSUMEABLE2 = new KeyBinding(SkyRift.MODID + ".key.consumable2", GLFW.GLFW_KEY_6, "Skyrift");
 
     public static final KeyBinding[] abilitybindings = new KeyBinding[]{ABILITY1, ABILITY2, ABILITY3, ABILITY4};
 
@@ -35,6 +37,8 @@ public class KeyBindings {
         ClientRegistry.registerKeyBinding(ITEM4);
         ClientRegistry.registerKeyBinding(ITEM5);
         ClientRegistry.registerKeyBinding(ITEM6);
+        ClientRegistry.registerKeyBinding(CONSUMEABLE1);
+        ClientRegistry.registerKeyBinding(CONSUMEABLE2);
     }
 
 

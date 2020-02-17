@@ -1,17 +1,12 @@
 package com.javisel.skyrift.common.champion;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.file.FileNotFoundAction;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -41,10 +36,10 @@ public class ChampionConfig {
     protected ForgeConfigSpec.ConfigValue<Double> attackSpeedPerLevel;
     protected ForgeConfigSpec.ConfigValue<Double> movementSpeed;
     protected ForgeConfigSpec.ConfigValue<Boolean> isRanged;
+
     protected ChampionConfig(String name) {
         this.name = name;
         configureChampion();
-
 
 
         Path path = FMLPaths.CONFIGDIR.get().resolve("skyrift/champions/" + name + "/");
@@ -58,18 +53,12 @@ public class ChampionConfig {
         ChampionConfig.loadConfig(config, FMLPaths.CONFIGDIR.get().resolve("skyrift/champions/" + name + "/" + name + "_stats.toml"));
 
 
-
-
     }
 
     public static void loadConfig(ForgeConfigSpec spec, Path path) {
         CommentedFileConfig configData;
 
-       configData = CommentedFileConfig.builder(path).sync().autosave().writingMode(WritingMode.REPLACE).build();
-
-
-
-
+        configData = CommentedFileConfig.builder(path).sync().autosave().writingMode(WritingMode.REPLACE).build();
 
 
         configData.load();

@@ -1,4 +1,4 @@
-package com.javisel.skyrift.common.capabilities;
+package com.javisel.skyrift.common.capabilities.entitydata;
 
 import com.javisel.skyrift.common.champion.Champion;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +24,7 @@ public interface IPlayerData {
     CompoundNBT writeNBT();
 
     CompoundNBT getChampionData();
+
 
     void loadNBT(CompoundNBT nbt);
 

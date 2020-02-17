@@ -1,5 +1,6 @@
 package com.javisel.skyrift.common.registration;
 
+import com.javisel.skyrift.common.network.AbilityActivationMessage;
 import com.javisel.skyrift.common.network.EntityDataMessage;
 import com.javisel.skyrift.common.network.PlayerDataMessage;
 import com.javisel.skyrift.main.SkyRift;
@@ -25,8 +26,10 @@ public final class PacketRegistration {
     private static int index;
 
     public static void register() {
+
         registerMessage(PlayerDataMessage.class, PlayerDataMessage::encode, PlayerDataMessage::decode, PlayerDataMessage.Handler::handle);
         registerMessage(EntityDataMessage.class, EntityDataMessage::encode, EntityDataMessage::decode, EntityDataMessage.Handler::handle);
+        registerMessage(AbilityActivationMessage.class, AbilityActivationMessage::encode, AbilityActivationMessage::decode, AbilityActivationMessage.Handler::handle);
     }
 
     private static <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,

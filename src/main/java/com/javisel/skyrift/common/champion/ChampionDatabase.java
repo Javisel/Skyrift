@@ -1,8 +1,6 @@
 package com.javisel.skyrift.common.champion;
 
 import com.javisel.skyrift.common.champion.champions.pyro.Pyro;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
 
 import java.util.HashMap;
 import java.util.UUID;

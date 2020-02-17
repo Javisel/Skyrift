@@ -1,4 +1,4 @@
-package com.javisel.skyrift.common.capabilities;
+package com.javisel.skyrift.common.capabilities.entitydata;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;

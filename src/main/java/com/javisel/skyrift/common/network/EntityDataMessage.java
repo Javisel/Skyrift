@@ -1,6 +1,6 @@
 package com.javisel.skyrift.common.network;
 
-import com.javisel.skyrift.common.capabilities.EntityDataProvider;
+import com.javisel.skyrift.common.capabilities.entitydata.EntityDataProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;

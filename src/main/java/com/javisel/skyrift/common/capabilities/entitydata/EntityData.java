@@ -1,4 +1,4 @@
-package com.javisel.skyrift.common.capabilities;
+package com.javisel.skyrift.common.capabilities.entitydata;
 
 import com.javisel.skyrift.common.champion.attribute.SkyriftAttributeMap;
 import net.minecraft.entity.SharedMonsterAttributes;

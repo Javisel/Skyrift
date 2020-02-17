@@ -1,4 +1,4 @@
-package com.javisel.skyrift.common.capabilities;
+package com.javisel.skyrift.common.capabilities.entitydata;
 
 import net.minecraft.entity.ai.attributes.AttributeMap;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;

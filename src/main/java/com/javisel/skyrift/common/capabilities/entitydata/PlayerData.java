@@ -1,4 +1,4 @@
-package com.javisel.skyrift.common.capabilities;
+package com.javisel.skyrift.common.capabilities.entitydata;
 
 import com.javisel.skyrift.common.champion.Champion;
 import com.javisel.skyrift.common.champion.ChampionDatabase;
@@ -16,6 +16,7 @@ public class PlayerData implements IPlayerData {
     ArrayList<ItemStack> abilities = new ArrayList<>();
     ArrayList<ItemStack> items = new ArrayList<>();
     int level = 0;
+
 
     @Override
     public CompoundNBT getChampionData() {
@@ -112,9 +113,9 @@ public class PlayerData implements IPlayerData {
 
     public void resetData() {
         isChampion = false;
-
         champion = null;
         championData = new CompoundNBT();
+        abilities.clear();
         level = 0;
 
 
@@ -122,8 +123,9 @@ public class PlayerData implements IPlayerData {
 
     @Override
     public void tick(PlayerEntity playerEntity) {
-        champion.tick(playerEntity);
-
+        if (champion != null) {
+            champion.tick(playerEntity);
+        }
     }
 
     @Override
