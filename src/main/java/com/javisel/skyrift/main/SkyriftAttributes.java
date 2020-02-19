@@ -27,7 +27,7 @@ public class SkyriftAttributes {
     public static final IAttribute MAGIC_RESIST = new RangedAttribute(null, "skyrift.MagicResist", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
     public static final IAttribute MAX_RESOURCE_AMOUNT = new RangedAttribute(null, "skyrift.MaxResourceAmount", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
     public static final IAttribute RESOURCE_REGEN = new RangedAttribute(null, "skyrift.ResourceRegen", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
-    public static final IAttribute COOLDOWN_REDUCTION = new RangedAttribute(null, "skyrift.CooldownReduction", 2.0D, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
+    public static final IAttribute COOLDOWN_REDUCTION = new RangedAttribute(null, "skyrift.CooldownReduction", 0.0D, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
     public static final IAttribute EXPERIENCE = new RangedAttribute(null, "skyrift.Experience", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
     public static final IAttribute GOLD_GENERATION = new RangedAttribute(null, "skyrift.GoldGeneration", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);
     public static final IAttribute RANGE = new RangedAttribute(null, "skyrift.Range", 0, 0.0D, 10000).setDescription("The Magical Power of an entity.").setShouldWatch(true);

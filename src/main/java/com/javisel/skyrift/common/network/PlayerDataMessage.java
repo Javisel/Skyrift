@@ -18,9 +18,7 @@ public class PlayerDataMessage {
     public PlayerDataMessage(CompoundNBT nbtag) {
 
         nbt = nbtag;
-        ItemStack test = ItemStack.read(nbt.getCompound("kit_part_2"));
 
-        System.out.println("PDM CDR: "+ SkyriftUtilities.getDeviceData(test).getCurrentCooldown());
     }
 
 
@@ -42,9 +40,7 @@ public class PlayerDataMessage {
 
                 Minecraft minecraft = Minecraft.getInstance();
                 SkyriftUtilities.getPlayerData(minecraft.player).loadNBT(mes.nbt);
-                ItemStack test = ItemStack.read(mes.nbt.getCompound("kit_part_2"));
 
-                System.out.println("Client PDM CDR: "+ SkyriftUtilities.getDeviceData(test).getCurrentCooldown());
             });
 
             ctx.get().setPacketHandled(true);

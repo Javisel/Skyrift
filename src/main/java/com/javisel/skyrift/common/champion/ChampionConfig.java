@@ -2,6 +2,7 @@ package com.javisel.skyrift.common.champion;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
+import com.javisel.skyrift.common.champion.ability.AbilityConfig;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -36,7 +37,7 @@ public class ChampionConfig {
     protected ForgeConfigSpec.ConfigValue<Double> attackSpeedPerLevel;
     protected ForgeConfigSpec.ConfigValue<Double> movementSpeed;
     protected ForgeConfigSpec.ConfigValue<Boolean> isRanged;
-
+    public ArrayList<AbilityConfig> abilityConfigs = new ArrayList<>();
     protected ChampionConfig(String name) {
         this.name = name;
         configureChampion();

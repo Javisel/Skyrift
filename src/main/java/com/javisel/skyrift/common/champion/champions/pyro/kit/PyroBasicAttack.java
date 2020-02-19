@@ -9,9 +9,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
+import static com.javisel.skyrift.common.champion.ChampionDatabase.championConfigs;
+import static com.javisel.skyrift.common.champion.ChampionDatabase.pyro;
+
 public class PyroBasicAttack extends MeleeBasicAttack {
     public PyroBasicAttack() {
-        super("pyro_basic_attack", ItemProperties.MELEE_BASIC_ATTACK_PROPERTIES);
+        super("pyro_basic_attack", championConfigs.get("pyro").abilityConfigs.get(1),ItemProperties.MELEE_BASIC_ATTACK_PROPERTIES);
     }
 
 

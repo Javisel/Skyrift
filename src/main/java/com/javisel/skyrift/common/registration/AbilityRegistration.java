@@ -1,6 +1,12 @@
 package com.javisel.skyrift.common.registration;
 
+import com.javisel.skyrift.common.champion.ChampionDatabase;
 import com.javisel.skyrift.common.champion.champions.pyro.kit.*;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.ability1.PyroAbility1;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.ability2.PyroAbility2;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.ability3.PyroAbility3;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.ability4.PyroAbility4;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.passive.PyroPassive;
 import com.javisel.skyrift.main.SkyRift;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -24,6 +30,7 @@ public class AbilityRegistration {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void registerAbility(final RegistryEvent.Register<Item> event) {
+
         event.getRegistry().registerAll
                 (
 
@@ -37,6 +44,7 @@ public class AbilityRegistration {
 
                 );
 
+        ChampionDatabase.forgeChamps();
 
     }
 

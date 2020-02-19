@@ -113,6 +113,7 @@ public abstract class Champion {
 
         for (int i = 0; i < getKit().size(); i++) {
 
+            System.out.println("Kit set Ability: " + getKit().get(i).getName());
             playerData.getAbilities().add(new ItemStack(getKit().get(i)));
 
 
@@ -120,6 +121,7 @@ public abstract class Champion {
 
         for (int i = 0; i < playerData.getAbilities().size(); i++) {
 
+            System.out.println("Ability: " + playerData.getAbilities().get(i).getDisplayName().getString());
             ((AbstractAbility) playerData.getAbilities().get(i).getItem()).setData(playerEntity, playerData.getAbilities().get(i));
 
 

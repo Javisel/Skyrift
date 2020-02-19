@@ -3,9 +3,6 @@ package com.javisel.skyrift.main;
 import com.javisel.skyrift.client.ClientEventHandler;
 import com.javisel.skyrift.client.KeyBindings;
 import com.javisel.skyrift.client.OverlayHandler;
-import com.javisel.skyrift.common.capabilities.devicedata.DeviceData;
-import com.javisel.skyrift.common.capabilities.devicedata.DeviceDataStorage;
-import com.javisel.skyrift.common.capabilities.devicedata.IDeviceData;
 import com.javisel.skyrift.common.capabilities.entitydata.*;
 import com.javisel.skyrift.common.registration.CapabilityRegistration;
 import com.javisel.skyrift.common.registration.PacketRegistration;
@@ -71,7 +68,6 @@ public class SkyRift {
         // some preinit code
         CapabilityManager.INSTANCE.register(IEntityData.class, new EntityDataStorage(), EntityData::new);
         CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayerDataStorage(), PlayerData::new);
-        CapabilityManager.INSTANCE.register(IDeviceData.class, new DeviceDataStorage(), DeviceData::new);
 
         PacketRegistration.register();
 

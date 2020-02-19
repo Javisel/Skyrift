@@ -1,17 +1,33 @@
 package com.javisel.skyrift.common.champion.champions.pyro;
 
 import com.javisel.skyrift.common.champion.ChampionConfig;
+import com.javisel.skyrift.common.champion.ability.AbilityConfig;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.ability1.PyroA1Config;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.ability2.PyroA2Config;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.ability3.PyroA3Config;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.ability4.PyroA4Config;
+import com.javisel.skyrift.common.champion.champions.pyro.kit.passive.PyroPassiveConfig;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.List;
 
 public class PyroConfig extends ChampionConfig {
 
-    PassiveData passiveData;
-    Ability1Data ability1Data;
+   public    PyroPassiveConfig passiveConfig = new PyroPassiveConfig();
+    public  PyroA1Config ability1Config = new PyroA1Config();
+    public AbilityConfig basicattack = new AbilityConfig("pyro","basic_attack");
+    public PyroA2Config Ability2Config = new PyroA2Config();
+    public PyroA3Config Ability3Config = new PyroA3Config();
+    public PyroA4Config Ability4Config = new PyroA4Config();
 
     public PyroConfig() {
         super("pyro");
+        super.abilityConfigs.add(passiveConfig);
+        super.abilityConfigs.add(basicattack);
+        super.abilityConfigs.add(ability1Config);
+        super.abilityConfigs.add(Ability2Config);
+        super.abilityConfigs.add(Ability3Config);
+        super.abilityConfigs.add(Ability4Config);
 
     }
 
@@ -45,81 +61,12 @@ public class PyroConfig extends ChampionConfig {
         builder.pop();
 
 
-        builder.push("Passive Stats");
-
-
-        passiveData = new PassiveData();
-        passiveData.bonusMagicPower = builder.comment("Bonus Magic Power").defineInRange("bonusMagicPower", 0.10D, 0, Double.MAX_VALUE);
-        passiveData.magicPowerPerLevel = builder.comment("Bonus Magic Power per Level").defineInRange("bonusMagicPowerperLevel", 0.045, 0, Double.MAX_VALUE);
-        passiveData.flatDamage = builder.comment("Flat Magic Damage").defineInRange("flatDamage", 5, 0, Double.MAX_VALUE);
-        passiveData.damagePerRank = builder.comment("Magic Damage per Rank. Rank refers to Heat thresholds.").defineInRange("damagePerRank", 5, 0, Double.MAX_VALUE);
-        passiveData.damagePowerScalingperRank = builder.comment("Burn Power Scaling per Rank").defineInRange("burnPowerScaling", 0.025, 0, Double.MAX_VALUE);
-
-
-        passiveData.size = getDoubleList(builder, "Burn Size", "burnSize", 0D, 2.5, 2.5, 2.5D);
-
-        passiveData.tickRate = getDoubleList(builder, "Burn Tick Rate", "tickRate", 0D, 1d, 0.8d, 0.6d, 0.4d);
-
-        builder.pop();
-
-        builder.push("Ability 1 Data");
-        ability1Data = new Ability1Data();
-        ability1Data.bonusMagicDamage = getDoubleList(builder, "onAttackMagicDamage", "onAttackMagicDamage", 0D, 0.2D, .4D, .6D, .8D, 1D);
-        ability1Data.bonusMagicScaling = getDoubleList(builder, "On Attack Magic Damage Scaling", "onAttackMagicScaling", 0D, 0.035D, .035D, .035D, .035D, 0.035D);
-        ability1Data.onhitSlowStrength = getDoubleList(builder, "On Hit Slow", "onhitSlowPercentage", 0.05, 0.10, 0.15, 0.2, 0.25);
-        ability1Data.onhitSlowDuration = getDoubleList(builder, "On Hit Slow Duration", "onhitSlowDuration", 0D, 1D, 1D, 1D, 1D, 1D);
-        ability1Data.armorShred = getDoubleList(builder, "On Hit Armor Shred", "onHitArmorShred", 0D, .1D, .15D, .2D, .25D, .3D);
-        ability1Data.onhitArmorDuration = getDoubleList(builder, "On Hit Armor Shred Duration", "onHitArmorDuration", 0D, 5D, 5D, 5D, 5D, 5D);
-        ability1Data.trueDamage = getDoubleList(builder, "On Hit True Damage", "onHitTrueDamage", 0D, 10D, 20D, 30D, 40D, 50D);
-        ability1Data.activeMagicDamage = getDoubleList(builder, "Active Magic Damage", "activeMagicDamage", 0d, 60d, 100d, 140d, 180d, 220d);
-        ability1Data.activeSlow = getDoubleList(builder, "Active Slow", "activeSlow", 0d, 10d, 15d, 20d, 25d, 30d);
-        ability1Data.activeSlowScaling = getDoubleList(builder, "Active Slow Scaling per 50 Power", "activeSlowScaling", 0d, 0.05, 0.05, 0.05, 0.05, 0.05);
-        ability1Data.activeSlowDuration = getDoubleList(builder, "Active Slow Duration", "activeSlowDuration", 0d, 2.25, 2.25, 2.25, 2.25, 2.25);
-        ability1Data.heatBonusPercentage = getDoubleList(builder, "Heat Bonus for Slow and Damage", "heatBonusPercentage", 0.d, 0.01, 0.01, 0.01, .01, 0.01);
-        ability1Data.heatConsumed = getDoubleList(builder, "Heat Consumed", "heatConsumption", 0.d, 0.01, 0.01, 0.01, .01, 0.01);
-        ability1Data.cooldown = getDoubleList(builder, "cooldown", "A1cooldown", 0.d, 14d, 14d, 14d, 14d, 14D);
-        ability1Data.buffDuration = getDoubleList(builder, "Active Buff Duration", "A1cooldown", 0.d, 5d, 5d, 5d, 5d, 5d);
-
-        builder.pop();
 
 
         config = builder.build();
     }
 
-    public static class PassiveData {
-        public ForgeConfigSpec.ConfigValue<Double> bonusMagicPower;
-        public ForgeConfigSpec.ConfigValue<Double> magicPowerPerLevel;
-        public ForgeConfigSpec.ConfigValue<Double> flatDamage;
-        public ForgeConfigSpec.ConfigValue<Double> damagePerRank;
-        public ForgeConfigSpec.ConfigValue<Double> damagePowerScalingperRank;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> size;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> tickRate;
 
-
-    }
-
-    public static class Ability1Data {
-        //Passive Component
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> bonusMagicDamage;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> bonusMagicScaling;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> onhitSlowStrength;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> onhitSlowDuration;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> armorShred;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> onhitArmorDuration;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> trueDamage;
-
-        //Active
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> buffDuration;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> activeMagicDamage;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> activeSlow;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> activeSlowDuration;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> activeSlowScaling;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> heatBonusPercentage;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> heatConsumed;
-        public ForgeConfigSpec.ConfigValue<List<? extends Double>> cooldown;
-
-
-    }
 
 
 }

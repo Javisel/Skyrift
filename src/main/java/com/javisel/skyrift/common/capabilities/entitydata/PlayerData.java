@@ -11,9 +11,10 @@ import java.util.ArrayList;
 public class PlayerData implements IPlayerData {
 
     boolean isChampion = false;
+    boolean isDone = false;
     Champion champion;
     CompoundNBT championData = new CompoundNBT();
-    ArrayList<ItemStack> abilities = new ArrayList<>();
+    ArrayList<ItemStack> abilities = new ArrayList<>(6);
     ArrayList<ItemStack> items = new ArrayList<>();
     int level = 0;
 
@@ -61,7 +62,7 @@ public class PlayerData implements IPlayerData {
 
         compoundNBT.putBoolean("ischampion", isChampion);
         compoundNBT.putInt("level", level);
-
+        compoundNBT.putBoolean("isdone",isDone);
 
         if (champion != null) {
             compoundNBT.putUniqueId("championid", champion.getId());
@@ -77,6 +78,16 @@ public class PlayerData implements IPlayerData {
 
         }
         return compoundNBT;
+    }
+
+    @Override
+    public boolean isDoneMakingChamp() {
+        return isDone;
+    }
+
+    @Override
+    public void switchDone() {
+        isDone=!isDone;
     }
 
     @Override
@@ -97,7 +108,7 @@ public class PlayerData implements IPlayerData {
 
             if (kit.contains("kit_part_" + i)) {
 
-                abilities.add(ItemStack.read(kit.getCompound("kit_part_" + i)));
+                abilities.add(i,ItemStack.read(kit.getCompound("kit_part_" + i)));
                 i++;
 
 
@@ -107,7 +118,7 @@ public class PlayerData implements IPlayerData {
 
 
         }
-
+        isDone=nbt.getBoolean("isdone");
 
     }
 

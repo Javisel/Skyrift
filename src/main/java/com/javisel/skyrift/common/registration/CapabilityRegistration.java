@@ -1,6 +1,5 @@
 package com.javisel.skyrift.common.registration;
 
-import com.javisel.skyrift.common.capabilities.devicedata.DeviceDataProvider;
 import com.javisel.skyrift.common.capabilities.entitydata.EntityDataProvider;
 import com.javisel.skyrift.common.capabilities.entitydata.PlayerDataProvider;
 import com.javisel.skyrift.common.champion.ability.AbstractAbility;
@@ -34,15 +33,5 @@ public class CapabilityRegistration {
     }
 
 
-    @SubscribeEvent
-    public void attachItem(AttachCapabilitiesEvent<ItemStack> event) {
-
-        if (event.getObject().getItem() instanceof AbstractAbility || event.getObject().getItem() instanceof SkyRiftItem) {
-            event.addCapability(new ResourceLocation(SkyRift.MODID, "devicedata"), new DeviceDataProvider());
-            System.out.println("Device data attached.");
-        }
-
-
-    }
 
 }

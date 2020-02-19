@@ -14,8 +14,14 @@ public abstract class AbstractAbility extends Item {
 
     private final EnumAbilityTags[] abilityTags;
 
-    public AbstractAbility(String name, Properties properties, EnumAbilityTags... abilityTags) {
+    public AbilityConfig getConfig() {
+        return config;
+    }
+
+    private final AbilityConfig config;
+    public AbstractAbility(String name, AbilityConfig config, Properties properties, EnumAbilityTags... abilityTags) {
         super(properties);
+        this.config=config;
         setRegistryName(name);
         this.abilityTags = abilityTags;
     }
@@ -23,10 +29,38 @@ public abstract class AbstractAbility extends Item {
     public EnumAbilityTags[] getAbilityTags() {
         return abilityTags;
     }
+    //ABILITY MECHANICS
+
+    public static final String COOLDOWN = "cooldown";
+    public static final String MAX_COOLDOWN = "max_cooldown";
+    public static final String BUFF_DURATION = "buffduration";
+    public static final String MAX_BUFF_DURATION = "max_buff_duration";
+    public static final String CAST_WINDOW = "cast_window";
+    public static final String MAX_CAST_WINDOW = "max_cast_window";
+    public static final String COUNT = "count";
+    public static final String COST = "cost";
+    public static final String RANK = "count";
+    public static final String CAN_UPGRADE = "canupgrade";
+    public static final String SECONDARYDATA="secondarydata";
 
     public void setData(PlayerEntity entity, ItemStack stack) {
 
+        CompoundNBT nbt = stack.hasTag() ? stack.getTag() : new CompoundNBT();
 
+        CompoundNBT SECONDARYDATA = new CompoundNBT();
+        nbt.put(AbstractAbility.SECONDARYDATA,SECONDARYDATA);
+        nbt.putFloat(COOLDOWN,0);
+        nbt.putFloat(MAX_COOLDOWN,0);
+        nbt.putFloat(BUFF_DURATION,0);
+        nbt.putFloat(MAX_BUFF_DURATION,0);
+        nbt.putFloat(CAST_WINDOW,0);
+        nbt.putFloat(MAX_CAST_WINDOW,0);
+        nbt.putByte(RANK, (byte) 0);
+        nbt.putByte(COUNT, (byte) 0);
+        nbt.putFloat(COST,0);
+        nbt.putBoolean(CAN_UPGRADE, false);
+
+        stack.setTag(nbt);
     }
 
     /**
@@ -44,16 +78,39 @@ public abstract class AbstractAbility extends Item {
         return false;
     }
 
+
     public float getCost(PlayerEntity playerEntity, ItemStack stack) {
 
 
-        return 0;
+        return  getConfig().cost.get().get(stack.getTag().getByte(RANK)).floatValue();
     }
+
+
+
+    public float getMaxCooldown(PlayerEntity playerEntity, ItemStack stack) {
+
+
+
+
+
+
+        return (float) (getConfig().cooldown.get().get(stack.getTag().getByte(RANK))   * (1-(SkyriftUtilities.getEntityData(playerEntity).getCooldownReduction().getValue())/100));
+    }
+
+
+    public float getCurrentCooldown(PlayerEntity playerEntity, ItemStack stack) {
+
+
+
+        return  stack.getTag().getFloat(COOLDOWN);
+    }
+
+
 
 
     public boolean isCastable(PlayerEntity caster, ItemStack castitem) {
 
-        return true;
+        return castitem.getTag().getFloat(COOLDOWN) ==0 && getCost(caster,castitem) <= SkyriftUtilities.getEntityData(caster).getResourceAmount()  ;
 
     }
 
@@ -61,6 +118,20 @@ public abstract class AbstractAbility extends Item {
     }
 
     public void commitCosts(PlayerEntity caster, ItemStack castitem) {
+
+
+
+        SkyriftUtilities.getEntityData(caster).setResourceAmount(SkyriftUtilities.getEntityData(caster).getResourceAmount() -   getCost(caster,castitem));
+
+
+
+
+    }
+
+    public boolean canPayCost(PlayerEntity caster, ItemStack castitem) {
+
+
+        return   getCost(caster,castitem) > SkyriftUtilities.getEntityData(caster).getResourceAmount()  ;
     }
 
 
@@ -77,13 +148,7 @@ public abstract class AbstractAbility extends Item {
         return false;
     }
 
-    /**
-     * If this function returns true (or the item is damageable), the ItemStack's NBT tag will be sent to the client.
-     */
-    @Override
-    public boolean shouldSyncTag() {
-        return true;
-    }
+
 
     public void passiveTrigger(PlayerEntity entity, EnumPassiveTriggers passivetrigger) {
 
@@ -93,15 +158,21 @@ public abstract class AbstractAbility extends Item {
     public void tick(PlayerEntity playerEntity, ItemStack stack) {
 
 
-        if (SkyriftUtilities.getDeviceData(stack).getCurrentCooldown() != 0) {
 
-            SkyriftUtilities.getDeviceData(stack).setCooldown(SkyriftUtilities.getDeviceData(stack).getCurrentCooldown() - 1);
+        if (stack.getTag().getFloat(COOLDOWN) >0) {
 
+            stack.getTag().putFloat(COOLDOWN,stack.getTag().getFloat(COOLDOWN)-1);
         }
 
-        System.out.println("Current Cooldown: " + SkyriftUtilities.getDeviceData(stack).getCurrentCooldown()/20);
+        if (stack.getTag().getFloat(BUFF_DURATION) >0) {
 
+            stack.getTag().putFloat(BUFF_DURATION,stack.getTag().getFloat(BUFF_DURATION)-1);
+        }
 
+        if (stack.getTag().getFloat(CAST_WINDOW) >0) {
+
+            stack.getTag().putFloat(CAST_WINDOW,stack.getTag().getFloat(CAST_WINDOW)-1);
+        }
 
 
     }
@@ -113,14 +184,26 @@ public abstract class AbstractAbility extends Item {
     public void startAbility(PlayerEntity caster, ItemStack castitem) {
 
 
+
+
+
+
+
+
+
+
     }
 
     public boolean attemptCast(PlayerEntity caster, ItemStack castitem) {
 
+        if (isCastable(caster,castitem)) {
 
-        SkyriftUtilities.getDeviceData(castitem).setCooldown(600);
-        SkyriftUtilities.getDeviceData(castitem).setMaxcooldown(600);
+            startAbility(caster, castitem);
+            commitCosts(caster,castitem);
 
+
+            return  true;
+        }
         return false;
     }
 

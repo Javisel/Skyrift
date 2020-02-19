@@ -2,7 +2,9 @@ package com.javisel.skyrift.common.champion.ability.basicattack;
 
 import com.javisel.skyrift.common.capabilities.entitydata.IEntityData;
 import com.javisel.skyrift.common.capabilities.entitydata.IPlayerData;
+import com.javisel.skyrift.common.champion.ability.AbilityConfig;
 import com.javisel.skyrift.common.champion.ability.EnumAbilityTags;
+import com.javisel.skyrift.common.damagesource.EnumDamageArchetype;
 import com.javisel.skyrift.common.damagesource.EnumDamageDevice;
 import com.javisel.skyrift.common.damagesource.SkyRiftDamageSource;
 import com.javisel.skyrift.main.SkyriftUtilities;
@@ -18,8 +20,8 @@ import static com.javisel.skyrift.main.SkyRift.SWINGAMOUNT;
 public class MeleeBasicAttack extends BasicAttack {
 
 
-    protected MeleeBasicAttack(String name, Properties properties) {
-        super(name, properties, EnumAbilityTags.BASICATTACK);
+    protected MeleeBasicAttack(String name, AbilityConfig config,Properties properties) {
+        super(name, config,properties, EnumAbilityTags.BASICATTACK);
     }
 
     public static void basicAttack(PlayerEntity attacker, Entity target, float swingStrength) {
@@ -43,7 +45,7 @@ public class MeleeBasicAttack extends BasicAttack {
         }
 
 
-        SkyRiftDamageSource damageSource = new SkyRiftDamageSource(attacker, attackDamage, EnumDamageDevice.BASIC_ATTACK, playerData.getChampion().getbasicAttackDamageType());
+        SkyRiftDamageSource damageSource = new SkyRiftDamageSource(attacker, attackDamage, EnumDamageDevice.BASIC_ATTACK, EnumDamageArchetype.BASIC_ATTACK,playerData.getChampion().getbasicAttackDamageType());
 
         target.attackEntityFrom(damageSource, attackDamage);
 

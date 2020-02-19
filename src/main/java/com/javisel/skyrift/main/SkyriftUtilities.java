@@ -1,7 +1,5 @@
 package com.javisel.skyrift.main;
 
-import com.javisel.skyrift.common.capabilities.devicedata.DeviceDataProvider;
-import com.javisel.skyrift.common.capabilities.devicedata.IDeviceData;
 import com.javisel.skyrift.common.capabilities.entitydata.EntityDataProvider;
 import com.javisel.skyrift.common.capabilities.entitydata.IEntityData;
 import com.javisel.skyrift.common.capabilities.entitydata.IPlayerData;
@@ -109,11 +107,6 @@ public class SkyriftUtilities {
 
     }
 
-    public static IDeviceData getDeviceData(ItemStack stack) {
-
-
-        return stack.getCapability(DeviceDataProvider.Device_DATA_CAPABILITY, null).orElseThrow(NullPointerException::new);
-    }
 
     public static IPlayerData getPlayerData(PlayerEntity entity) {
 
@@ -131,6 +124,8 @@ public class SkyriftUtilities {
         playerEntity.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).setBaseValue(1);
         playerEntity.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).func_225505_c_().clear();
         playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).func_225505_c_().clear();
+        playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).func_225505_c_().clear();
+
         playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.1);
         playerData.setChampion(champion);
         playerData.setisChampion();
@@ -158,6 +153,7 @@ public class SkyriftUtilities {
 
         champion.construct(playerEntity);
 
+        getPlayerData(playerEntity).switchDone();
         sync(playerEntity);
 
 
@@ -224,5 +220,17 @@ public class SkyriftUtilities {
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

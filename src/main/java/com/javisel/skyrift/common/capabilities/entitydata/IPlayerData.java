@@ -13,6 +13,8 @@ public interface IPlayerData {
 
     boolean isChampion();
 
+    boolean isDoneMakingChamp();
+    void switchDone();
     void setChampion(Champion champion);
 
     void setisChampion();

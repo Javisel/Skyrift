@@ -63,7 +63,7 @@ public class EventHandler {
 
         if (!e.player.world.isRemote && e.player.isAlive()) {
 
-            if (playerData.isChampion()) {
+            if (playerData.isChampion() && playerData.isDoneMakingChamp()) {
                 playerData.tick(e.player);
                 e.player.getFoodStats().setFoodLevel(0);
 
