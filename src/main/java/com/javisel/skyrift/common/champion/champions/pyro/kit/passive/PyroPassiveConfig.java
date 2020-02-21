@@ -14,7 +14,7 @@ public class PyroPassiveConfig extends AbilityConfig {
     public ForgeConfigSpec.ConfigValue<Double> flatDamage;
     public ForgeConfigSpec.ConfigValue<Double> damagePerRank;
     public ForgeConfigSpec.ConfigValue<Double> damagePowerScalingperRank;
-    public ForgeConfigSpec.ConfigValue<List<? extends Double>> size;
+    public ForgeConfigSpec.ConfigValue<Double> size;
     public ForgeConfigSpec.ConfigValue<List<? extends Double>> tickRate;
 
 
@@ -40,7 +40,7 @@ public class PyroPassiveConfig extends AbilityConfig {
         damagePowerScalingperRank = builder.comment("Burn Power Scaling per Rank").defineInRange("burnPowerScaling", 0.025, 0, Double.MAX_VALUE);
 
 
-        size = getDoubleList(builder, "Burn Size", "burnSize", 0D, 2.5, 2.5, 2.5D);
+        size = builder.comment("aura Size in Blocks").defineInRange("auraSize",2.5,0,10);
 
         tickRate = getDoubleList(builder, "Burn Tick Rate", "tickRate", 0D, 1d, 0.8d, 0.6d, 0.4d);
 

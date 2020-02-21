@@ -21,10 +21,10 @@ public class CapabilityRegistration {
     @SubscribeEvent
     public void attachCapability(AttachCapabilitiesEvent<Entity> event) {
 
-        if (event.getObject() instanceof LivingEntity) {
+
             event.addCapability(new ResourceLocation(SkyRift.MODID, "entitydata"), new EntityDataProvider());
 
-        }
+
         if (event.getObject() instanceof PlayerEntity) {
             event.addCapability(new ResourceLocation(SkyRift.MODID, "playerdata"), new PlayerDataProvider());
 

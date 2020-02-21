@@ -25,22 +25,26 @@ public class PyroAbility1 extends AbstractAbility {
 
     }
 
-
     @Override
-    public float getMaxCooldown(PlayerEntity playerEntity, ItemStack stack) {
+    public boolean attemptCast(PlayerEntity caster, ItemStack castitem) {
 
+        startCooldown(caster, castitem);
+        castitem.getTag().putFloat(BUFF_DURATION,400);
+        castitem.getTag().putFloat(MAX_BUFF_DURATION,400);
+        castitem.getTag().putByte(COUNT, (byte) 5);
+        castitem.getTag().putFloat(COST, 134);
+        castitem.getTag().putBoolean(DISPLAY_COUNT, true);
 
-
-
-
-
-        return (float) (getConfig().cooldown.get().get(stack.getTag().getByte(RANK))   * (1-(SkyriftUtilities.getEntityData(playerEntity).getCooldownReduction().getValue())/100));
+        return  true;
     }
 
-    @Override
-    public float getCurrentCooldown(PlayerEntity playerEntity, ItemStack stack) {
-        return stack.getTag().getFloat(COOLDOWN);
-    }
+
+
+
+
+
+
+
 }
 
 

@@ -24,7 +24,8 @@ public class MeleeBasicAttack extends BasicAttack {
         super(name, config,properties, EnumAbilityTags.BASICATTACK);
     }
 
-    public static void basicAttack(PlayerEntity attacker, Entity target, float swingStrength) {
+    public static final String ATTACK_STRENGTH = "attackstrength";
+    public  boolean basicAttack(PlayerEntity attacker, Entity target, float swingStrength, ItemStack swingstack) {
 
         IEntityData entityData = SkyriftUtilities.getEntityData(attacker);
         IPlayerData playerData = SkyriftUtilities.getPlayerData(attacker);
@@ -36,10 +37,15 @@ public class MeleeBasicAttack extends BasicAttack {
             attackDamage *= entityData.getCritDamage().getValue();
         }
 
+
+
         if (swingStrength < 0.5f) {
 
             attackDamage *= 0.25f;
+
+            swingstack.getTag().putFloat(ATTACK_STRENGTH,0.25f);
         } else {
+            swingstack.getTag().putFloat(ATTACK_STRENGTH,swingStrength);
 
             attackDamage *= swingStrength;
         }
@@ -47,9 +53,9 @@ public class MeleeBasicAttack extends BasicAttack {
 
         SkyRiftDamageSource damageSource = new SkyRiftDamageSource(attacker, attackDamage, EnumDamageDevice.BASIC_ATTACK, EnumDamageArchetype.BASIC_ATTACK,playerData.getChampion().getbasicAttackDamageType());
 
-        target.attackEntityFrom(damageSource, attackDamage);
 
 
+        return   target.attackEntityFrom(damageSource, attackDamage);
     }
 
     @Override
@@ -70,7 +76,7 @@ public class MeleeBasicAttack extends BasicAttack {
             if (attacker instanceof PlayerEntity) {
                 PlayerEntity playerEntity = (PlayerEntity) attacker;
 
-                basicAttack(playerEntity, target, stack.getTag().getFloat(SWINGAMOUNT));
+                basicAttack(playerEntity, target, stack.getTag().getFloat(SWINGAMOUNT), stack);
 
 
             }

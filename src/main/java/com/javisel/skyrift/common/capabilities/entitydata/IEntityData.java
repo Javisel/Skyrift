@@ -84,5 +84,11 @@ public interface IEntityData {
 
     AttributeMap getAttributeMap();
 
+    EnumTeam getTeam();
+    void setTeam(EnumTeam team);
     void setIsRanged(Boolean isRanged);
+    float getCombatTimer();
+    boolean isInCombat();
+    void setCombat();
+    void tick();
 }

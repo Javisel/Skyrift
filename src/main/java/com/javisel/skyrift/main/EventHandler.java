@@ -7,6 +7,7 @@ import com.javisel.skyrift.common.capabilities.entitydata.PlayerDataProvider;
 import com.javisel.skyrift.common.damagesource.EnumDamageType;
 import com.javisel.skyrift.common.damagesource.SkyRiftDamageSource;
 import com.javisel.skyrift.common.entity.BypassDamage;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -30,6 +31,11 @@ public class EventHandler {
 
         if (!(e.getSource() instanceof SkyRiftDamageSource) && e.getSource() != DamageSource.OUT_OF_WORLD && !(e.getSource() instanceof BypassDamage)) {
 
+
+            if (e.getSource().getTrueSource() != null) {
+                SkyriftUtilities.getEntityData(e.getSource().getTrueSource()).setCombat();
+                SkyriftUtilities.getEntityData(e.getEntity()).setCombat();
+            }
 
             if (e.getSource().getTrueSource() instanceof PlayerEntity) {
 
@@ -55,6 +61,25 @@ public class EventHandler {
     }
 
 
+
+
+
+    @SubscribeEvent
+    public void disableDamage(LivingDamageEvent event) {
+
+        if (event.getSource().getTrueSource() !=null) {
+
+            if (SkyriftUtilities.getEntityData(event.getSource().getTrueSource()).getTeam()==SkyriftUtilities.getEntityData(event.getEntity()).getTeam()) {
+
+                event.setCanceled(true);
+            }
+
+
+        }
+
+
+    }
+
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent e) {
 
@@ -65,6 +90,7 @@ public class EventHandler {
 
             if (playerData.isChampion() && playerData.isDoneMakingChamp()) {
                 playerData.tick(e.player);
+                SkyriftUtilities.getEntityData(e.player).tick();
                 e.player.getFoodStats().setFoodLevel(0);
 
                 if ( e.player.getHeldItemMainhand().getItem() != playerData.getAbilities().get(1).getItem() && !e.player.isCreative()) {
@@ -139,12 +165,18 @@ public class EventHandler {
 
                 }
 
-                newdamage = (e.getAmount() * 100) / ((defence * (1 - (percentPen / 100)) - flatPen));
+                defence=defence *  (1- (percentPen/100));
+
+                defence-=flatPen;
+
+                newdamage = (newdamage * 100) / (defence+100);
+
 
 
             }
 
             if (newdamage <= 0) {
+                e.setCanceled(true);
                 return;
             }
 
@@ -156,7 +188,7 @@ public class EventHandler {
             if (victimData.getHealth() <= 0) {
 
                 e.getEntityLiving().setHealth(1);
-                e.getEntityLiving().attackEntityFrom(new BypassDamage(e.getSource().getTrueSource(), damageSource), (float) newdamage);
+                e.getEntity().attackEntityFrom(new BypassDamage(e.getSource().getTrueSource(), damageSource), (float) newdamage);
 
 
             }
@@ -180,6 +212,7 @@ public class EventHandler {
 
 
     }
+
 
 
 }

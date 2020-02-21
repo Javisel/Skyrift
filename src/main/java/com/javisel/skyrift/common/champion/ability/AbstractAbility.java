@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nullable;
 
@@ -14,9 +15,7 @@ public abstract class AbstractAbility extends Item {
 
     private final EnumAbilityTags[] abilityTags;
 
-    public AbilityConfig getConfig() {
-        return config;
-    }
+
 
     private final AbilityConfig config;
     public AbstractAbility(String name, AbilityConfig config, Properties properties, EnumAbilityTags... abilityTags) {
@@ -25,6 +24,14 @@ public abstract class AbstractAbility extends Item {
         setRegistryName(name);
         this.abilityTags = abilityTags;
     }
+
+
+
+
+    public  AbilityConfig getConfig() {
+        return config;
+    }
+
 
     public EnumAbilityTags[] getAbilityTags() {
         return abilityTags;
@@ -42,6 +49,7 @@ public abstract class AbstractAbility extends Item {
     public static final String RANK = "count";
     public static final String CAN_UPGRADE = "canupgrade";
     public static final String SECONDARYDATA="secondarydata";
+    public static final String DISPLAY_COUNT ="displaycount";
 
     public void setData(PlayerEntity entity, ItemStack stack) {
 
@@ -59,6 +67,7 @@ public abstract class AbstractAbility extends Item {
         nbt.putByte(COUNT, (byte) 0);
         nbt.putFloat(COST,0);
         nbt.putBoolean(CAN_UPGRADE, false);
+        nbt.putBoolean(DISPLAY_COUNT, false);
 
         stack.setTag(nbt);
     }
@@ -91,11 +100,35 @@ public abstract class AbstractAbility extends Item {
 
 
 
+         float precdr = (getConfig().cooldown.get().get(stack.getTag().getByte(RANK)).floatValue());
 
+         float cdr = (float) (1- (SkyriftUtilities.getEntityData(playerEntity).getCooldownReduction().getValue() /100));
+         precdr*=cdr;
 
+        return precdr;
 
-        return (float) (getConfig().cooldown.get().get(stack.getTag().getByte(RANK))   * (1-(SkyriftUtilities.getEntityData(playerEntity).getCooldownReduction().getValue())/100));
     }
+
+
+    public boolean startCooldown(PlayerEntity playerEntity, ItemStack stack) {
+
+
+        stack.getTag().putFloat(COOLDOWN,getMaxCooldown(playerEntity,stack) * 20);
+
+
+
+        return  true;
+    }
+
+    public float getBuffDuration(PlayerEntity playerEntity, ItemStack stack) {
+
+
+
+        return  stack.getTag().getFloat(BUFF_DURATION);
+    }
+
+
+
 
 
     public float getCurrentCooldown(PlayerEntity playerEntity, ItemStack stack) {

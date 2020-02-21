@@ -12,12 +12,52 @@ import static com.javisel.skyrift.main.SkyriftAttributes.*;
 
 public class EntityData implements IEntityData {
 
+
+    EnumTeam team = EnumTeam.NONE;
     AttributeMap skyriftAttributes = new SkyriftAttributeMap();
     float RESOURCE_AMOUNT = 0;
     boolean isRanged = false;
     float health = 0;
     float gold = 0;
+    float combatTimer = 0;
+    boolean isInCombat=false;
 
+    @Override
+    public EnumTeam getTeam() {
+        return team;
+    }
+
+    @Override
+    public void setTeam(EnumTeam team) {
+    this.team=team;
+    }
+
+    @Override
+    public float getCombatTimer() {
+        return  combatTimer;
+    }
+
+    @Override
+    public boolean isInCombat() {
+        return isInCombat;
+    }
+
+    @Override
+    public void setCombat() {
+        isInCombat=true;
+        combatTimer=200;
+    }
+
+    @Override
+    public void tick() {
+
+        if (combatTimer>0){
+            combatTimer--;
+            if (combatTimer==0){
+                isInCombat=false;
+            }
+        }
+    }
 
     @Override
 
@@ -25,10 +65,10 @@ public class EntityData implements IEntityData {
 
         skyriftAttributes = new SkyriftAttributeMap();
         SharedMonsterAttributes.readAttributes(skyriftAttributes, nbt.getList("attributemap", 10));
-
+        team=EnumTeam.getTeamByInt(nbt.getInt("team"));
         isRanged = nbt.getBoolean("isranged");
         health = nbt.getFloat("health");
-
+        RESOURCE_AMOUNT=nbt.getFloat("resourceamount");
 
     }
 
@@ -78,6 +118,7 @@ public class EntityData implements IEntityData {
         nbt.put("attributemap", SharedMonsterAttributes.writeAttributes(skyriftAttributes));
         nbt.putBoolean("isranged", isRanged);
         nbt.putFloat("health", health);
+        nbt.putInt("team",team.getId());
         return nbt;
     }
 
@@ -189,11 +230,27 @@ public class EntityData implements IEntityData {
 
     @Override
     public void setResourceAmount(double amount) {
+
+        if (amount+RESOURCE_AMOUNT>getMaxResourceAmount().getValue()) {
+            amount=RESOURCE_AMOUNT;
+        }
+
+
         RESOURCE_AMOUNT = (float) amount;
     }
 
     @Override
     public void addResourceAmount(float amount) {
+
+        if (amount+RESOURCE_AMOUNT > getMaxResourceAmount().getValue()) {
+            amount= (float) (getMaxResourceAmount().getValue()-RESOURCE_AMOUNT);
+
+        }
+
+        if (amount+RESOURCE_AMOUNT<0) {
+            amount=RESOURCE_AMOUNT;
+        }
+
         RESOURCE_AMOUNT += amount;
     }
 

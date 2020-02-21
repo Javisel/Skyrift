@@ -1,9 +1,6 @@
 package com.javisel.skyrift.main;
 
-import com.javisel.skyrift.common.capabilities.entitydata.EntityDataProvider;
-import com.javisel.skyrift.common.capabilities.entitydata.IEntityData;
-import com.javisel.skyrift.common.capabilities.entitydata.IPlayerData;
-import com.javisel.skyrift.common.capabilities.entitydata.PlayerDataProvider;
+import com.javisel.skyrift.common.capabilities.entitydata.*;
 import com.javisel.skyrift.common.champion.Champion;
 import com.javisel.skyrift.common.network.EntityDataMessage;
 import com.javisel.skyrift.common.network.PlayerDataMessage;
@@ -128,7 +125,6 @@ public class SkyriftUtilities {
 
         playerEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.1);
         playerData.setChampion(champion);
-        playerData.setisChampion();
         playerData.getChampionData().putInt("tickcount", 0);
 
         entityData.getMaxHealth().setBaseValue(champion.getBasedata().getBaseHealth().get());
@@ -153,7 +149,8 @@ public class SkyriftUtilities {
 
         champion.construct(playerEntity);
 
-        getPlayerData(playerEntity).switchDone();
+        entityData.setTeam(EnumTeam.EARTH);
+        playerData.setisChampion();
         sync(playerEntity);
 
 
@@ -201,6 +198,13 @@ public class SkyriftUtilities {
 
 
     }
+
+
+
+
+
+
+
 
 
     public static void addResource(LivingEntity target, @Nullable LivingEntity source, float amount) {

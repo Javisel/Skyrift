@@ -12,11 +12,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -29,6 +27,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.fml.common.Mod;
@@ -52,9 +52,9 @@ public class OverlayHandler extends GuiUtils {
 
 
     @SubscribeEvent
-    public void overlayOverride(RenderGameOverlayEvent event) {
+    public void overlayOverride(RenderGameOverlayEvent.Pre event) {
 
-        if (instance.player.isCreative() || !SkyriftUtilities.isChampion(instance.player) || !instance.player.isAlive() || !SkyriftUtilities.getPlayerData(instance.player).isDoneMakingChamp()) {
+        if ( instance.player.isCreative() || !SkyriftUtilities.isChampion(instance.player) || !instance.player.isAlive() || !SkyriftUtilities.getPlayerData(instance.player).isDoneMakingChamp()) {
         } else {
             if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
                 event.setCanceled(true);
@@ -84,12 +84,30 @@ public class OverlayHandler extends GuiUtils {
 
             } else if (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
                 event.setCanceled(true);
+            } else if (event.getType() == RenderGameOverlayEvent.ElementType.CHAT) {
+
+
+
+
             }
 
         }
-        //instance.fontRenderer.drawString("SKYRIFT INDEV",0,0,Color.WHITE.getRGB());
 
     }
+
+    @SubscribeEvent
+    public void adjustChat(RenderGameOverlayEvent.Chat e) {
+
+        e.setPosY(e.getPosY() + 10);
+
+
+
+    }
+
+
+
+
+
 
     public void renderItemSet(RenderGameOverlayEvent event) {
 
@@ -280,6 +298,23 @@ public class OverlayHandler extends GuiUtils {
         x = (x - 86 / 2);
         instance.textureManager.bindTexture(mobahud);
 
+
+        //PASSIVE RENDERING
+        float scalefactor = 1;
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(scalefactor, scalefactor, 1);
+
+        int xpos = (scaledresolution.getScaledWidth() / 2) - 69;
+        int ypos = (scaledresolution.getScaledHeight()) - 50;
+        drawTexturedModalRect((int) ((xpos) / scalefactor), (int) (ypos / scalefactor), 2, 2, 20, 20, -3);
+
+        RenderSystem.popMatrix();
+      renderHotbarItem((int) ((xpos + 2) / scalefactor), (int) ((ypos + 2) / scalefactor), event.getPartialTicks(), instance.player, playerData.getAbilities().get(0));
+
+        instance.textureManager.bindTexture(mobahud);
+
+
+        //ABILITY RENDERS
         for (int i = 0; i < 4; i++) {
             ItemStack ability = playerData.getAbilities().get(2 + i);
 
@@ -300,36 +335,31 @@ public class OverlayHandler extends GuiUtils {
             }
 
 
+            RenderSystem.pushMatrix();
             RenderSystem.enableRescaleNormal();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             RenderHelper.enableStandardItemLighting();
             RenderSystem.scalef(1, 1, 0.75f);
 
-            if (playerData.getAbilities().size() > 2) {
-                renderHotbarItem(x + 2 + (22 * i), y + 2, event.getPartialTicks(), instance.player, playerData.getAbilities().get(2 + i));
-
-
-            }
-
-            //Information
-
-            //DISPLAYDATA 1
-
+            renderHotbarItem(x + 2 + (22 * i), y + 2, event.getPartialTicks(), instance.player, playerData.getAbilities().get(2 + i));
 
             RenderSystem.scalef(1, 1, 1);
             RenderHelper.disableStandardItemLighting();
             RenderSystem.disableRescaleNormal();
             RenderSystem.disableBlend();
+
+            RenderSystem.popMatrix();
             instance.textureManager.bindTexture(mobahud);
 
             int rankposx = x + (22 * i) + 3;
             int rankposy = y + 22;
 
+            //Ability Rankings
             for (int g = 0; g < 5; g++) {
 
 
-                drawTexturedModalRect(rankposx + (3 * g), rankposy, 5, playerData.getAbilities().get(2 + i).getTag().getByte(RANK) >= g - 1 && playerData.getAbilities().get(2 + i).getTag().getByte(RANK) != 0 ? 26 : 23, 2, 2, -2);
+               drawTexturedModalRect(rankposx + (3 * g), rankposy, 5, playerData.getAbilities().get(2 + i).getTag().getByte(RANK) >= g - 1 && playerData.getAbilities().get(2 + i).getTag().getByte(RANK) != 0 ? 26 : 23, 2, 2, -2);
 
 
             }
@@ -374,7 +404,6 @@ public class OverlayHandler extends GuiUtils {
 
 
     private void renderHotbarItem(int x, int y, float partialTicks, PlayerEntity player, ItemStack stack) {
-        if (!stack.isEmpty()) {
             float f = (float) stack.getAnimationsToGo() - partialTicks;
             if (f > 0.0F) {
                 RenderSystem.pushMatrix();
@@ -388,14 +417,15 @@ public class OverlayHandler extends GuiUtils {
             if (f > 0.0F) {
                 RenderSystem.popMatrix();
             }
+
             this.renderItemOverlayIntoGUI(instance.fontRenderer, stack, instance.player, x, y, null);
 
-        }
     }
 
     public void renderChampionData(RenderGameOverlayEvent event) {
 
 
+        SkyriftUtilities.getPlayerData(instance.player).getChampion().renderOverlayData();
     }
 
     public void renderItemOverlayIntoGUI(FontRenderer fr, ItemStack stack, PlayerEntity playerEntity, int xPosition, int yPosition, @Nullable String text) {
@@ -403,13 +433,12 @@ public class OverlayHandler extends GuiUtils {
         CompoundNBT nbt = stack.getTag();
 
         AbstractAbility abstractAbility = (AbstractAbility) stack.getItem();
+        if (abstractAbility.getCurrentCooldown(playerEntity,stack) > 0) {
+            float f3 = abstractAbility.getCurrentCooldown(playerEntity, stack) / (abstractAbility.getMaxCooldown(playerEntity, stack) *20);
 
+            String displaycd = String.valueOf(Math.round(nbt.getFloat(COOLDOWN)));
 
-        if (nbt.getFloat(COOLDOWN) > 0) {
-            float f3 = abstractAbility.getCurrentCooldown(playerEntity, stack) / abstractAbility.getMaxCooldown(playerEntity, stack);
-
-            String displaycd = String.valueOf(Math.round(nbt.getFloat(COOLDOWN) / 20));
-
+            RenderSystem.pushMatrix();
 
             RenderSystem.disableDepthTest();
             RenderSystem.disableTexture();
@@ -417,85 +446,17 @@ public class OverlayHandler extends GuiUtils {
             RenderSystem.defaultBlendFunc();
             Tessellator tessellator1 = Tessellator.getInstance();
             BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
+            IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+
             this.draw(bufferbuilder1, xPosition, yPosition + MathHelper.floor(16.0F * (1.0F - f3)), 16, MathHelper.ceil(16.0F * f3), 128, 128, 128, 130);
+            RenderSystem.scalef(1,1,100);
+            fr.renderString(displaycd, (xPosition +8) - (instance.fontRenderer.getStringWidth(displaycd)/2) , yPosition+8, 16777215, true, matrixstack.getLast().getMatrix(), irendertypebuffer$impl, false, 0, 15728880);
+
             RenderSystem.enableTexture();
             RenderSystem.enableDepthTest();
-        }
-
-
-        if (nbt.getFloat(BUFF_DURATION) > 0) {
-            RenderSystem.disableDepthTest();
-            RenderSystem.disableTexture();
-            RenderSystem.disableAlphaTest();
-            RenderSystem.disableBlend();
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
-            float health = nbt.getFloat(BUFF_DURATION) / nbt.getFloat(MAX_BUFF_DURATION);
-            int i = Math.round(health * 13.0F);
-            int j = stack.getItem().getRGBDurabilityForDisplay(stack);
-            this.draw(bufferbuilder, xPosition + 2, yPosition + 13, 13, 2, 0, 0, 0, 255);
-            this.draw(bufferbuilder, xPosition + 2, yPosition + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
-            RenderSystem.enableBlend();
-            RenderSystem.enableAlphaTest();
-            RenderSystem.enableTexture();
-            RenderSystem.enableDepthTest();
-        }
-
-
-        if (nbt.getFloat(COST) > 0) {
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(0.5f, 0.5f, 1);
-            String s = text == null ? String.valueOf((int) abstractAbility.getCost(playerEntity, stack)) : text;
-            matrixstack.translate(0.0D, 0.0D, 50 + 200.0F);
-
-            float x = (xPosition + 27 - 2 - fr.getStringWidth(s));
-            float y = yPosition;
-            x /= .5f;
-            y /= .5f;
-
-
-            IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-            fr.renderString(s, x, y, 16777215, true, matrixstack.getLast().getMatrix(), irendertypebuffer$impl, false, 0, 15728880);
-            irendertypebuffer$impl.finish();
             RenderSystem.popMatrix();
 
-        }
-
-
-        if (nbt.getByte(COUNT) > 1) {
-            RenderSystem.pushMatrix();
-
-            float scalefactor = 0.5f;
-            RenderSystem.scalef(scalefactor, scalefactor, 1);
-
-
-            String s = text == null ? String.valueOf(nbt.getByte(COUNT)) : text;
-            matrixstack.translate(0.0D, 0.0D, 50 + 200.0F);
-            float x = xPosition + 21 - 2 - fr.getStringWidth(s);
-            float y = yPosition + 9 + 3;
-            x /= scalefactor;
-            y /= scalefactor;
-            IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-            fr.renderString(s, x, y, 16777215, true, matrixstack.getLast().getMatrix(), irendertypebuffer$impl, false, 0, 15728880);
             irendertypebuffer$impl.finish();
-            RenderSystem.popMatrix();
-
-        }
-
-        if (!abstractAbility.canPayCost(playerEntity,stack)) {
-
-            RenderSystem.disableDepthTest();
-            RenderSystem.disableTexture();
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            Tessellator tessellator1 = Tessellator.getInstance();
-            BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
-            instance.textureManager.bindTexture(SkyriftUtilities.getPlayerData(playerEntity).getChampion().getResource().RESOURCE_TEXTURES);
-            drawTexturedModalRect(xPosition, yPosition, 1, 20, 16, 16, 60);
-
-            RenderSystem.enableTexture();
-            RenderSystem.enableDepthTest();
-
         }
         if (nbt.getByte(RANK) <= 0) {
 
@@ -505,11 +466,96 @@ public class OverlayHandler extends GuiUtils {
             RenderSystem.defaultBlendFunc();
             Tessellator tessellator1 = Tessellator.getInstance();
             BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
+            IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+
             this.draw(bufferbuilder1, xPosition, yPosition, 16, MathHelper.ceil(16.0F), 0, 0, 0, 150);
             RenderSystem.enableTexture();
             RenderSystem.enableDepthTest();
+            irendertypebuffer$impl.finish();
+
+            return;
+        }
+
+
+        if (nbt.getFloat(BUFF_DURATION) > 0) {
+            RenderSystem.pushMatrix();
+            RenderSystem.disableDepthTest();
+            RenderSystem.disableTexture();
+            RenderSystem.disableAlphaTest();
+            RenderSystem.disableBlend();
+            Tessellator tessellator1 = Tessellator.getInstance();
+            BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
+            float health = nbt.getFloat(BUFF_DURATION) / nbt.getFloat(MAX_BUFF_DURATION);
+            RenderSystem.scalef(1,1,20);
+            int i = Math.round(health * 13.0F);
+            int j = stack.getItem().getRGBDurabilityForDisplay(stack);
+            this.draw(bufferbuilder1, xPosition + 2, yPosition + 13, 13, 2, 0, 0, 0, 255);
+            this.draw(bufferbuilder1, xPosition + 2, yPosition + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
+            RenderSystem.enableBlend();
+            RenderSystem.enableAlphaTest();
+            RenderSystem.enableTexture();
+            RenderSystem.enableDepthTest();
+            RenderSystem.popMatrix();
 
         }
+
+        /*
+
+        if (abstractAbility.getCost(playerEntity, stack) > 0) {
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(0.5f, 0.5f, 20);
+            String s = String.valueOf((int) abstractAbility.getCost(playerEntity, stack));
+            matrixstack.translate(0.0D, 0.0D, 50 + 200.0F);
+
+            float x = (xPosition + 27 - 2 - fr.getStringWidth(s));
+            float y = yPosition;
+            x /= .5f;
+            y /= .5f;
+            Tessellator tessellator1 = Tessellator.getInstance();
+            IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+
+            fr.renderString(s, x, y, 16777215, true, matrixstack.getLast().getMatrix(), irendertypebuffer$impl, false, 0, 15728880);
+            irendertypebuffer$impl.finish();
+            RenderSystem.popMatrix();
+
+        }
+
+
+
+        /*
+        if (nbt.getBoolean(DISPLAY_COUNT)) {
+            RenderSystem.pushMatrix();
+
+            float scalefactor = 0.5f;
+            RenderSystem.scalef(scalefactor, scalefactor, 20);
+            Tessellator tessellator1 = Tessellator.getInstance();
+            IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+
+            String s = String.valueOf(nbt.getByte(COUNT));
+            matrixstack.translate(0.0D, 0.0D, 50 + 200.0F);
+            float x = xPosition + 21 - 2 - fr.getStringWidth(s);
+            float y = yPosition + 9 + 3;
+            x /= scalefactor;
+            y /= scalefactor;
+            fr.renderString(s, x, y, 16777215, true, matrixstack.getLast().getMatrix(), irendertypebuffer$impl, false, 0, 15728880);
+            irendertypebuffer$impl.finish();
+            RenderSystem.popMatrix();
+
+        }
+
+
+         */
+        if (!abstractAbility.canPayCost(playerEntity, stack)) {
+
+
+            RenderSystem.enableAlphaTest();
+            instance.textureManager.bindTexture(SkyriftUtilities.getPlayerData(playerEntity).getChampion().getResource().RESOURCE_TEXTURES);
+            drawTexturedModalRect(xPosition, yPosition, 1, 20, 16, 16, 55);
+
+
+        }
+
+
 
     }
 
